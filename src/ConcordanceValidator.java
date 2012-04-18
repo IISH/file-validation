@@ -1,5 +1,4 @@
 import java.io.*;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,9 +18,7 @@ public class ConcordanceValidator {
     private static final String PID_COLUMN_NAME = "Uniek ID";
     private static final String JPEG_COLUMN_NAME = "JPEG-7";
     private static final String JPEG2_COLUMN_NAME = "JPEG-10";
-
-    private static final String TIFF_EXTENSION = "tif";
-    private static final String JPEG_EXTENSION = "jpg";
+    private static final String OCR_COLUMN_NAME = "OCR";
 
     private static final String CSV_SEPARATOR = ";";
 
@@ -31,27 +28,25 @@ public class ConcordanceValidator {
 
     private static final int MINIMAL_FILE_SIZE = 200;
 
+    private static final byte[] MAGIC_NUMBER_TIFF_BIG_ENDIAN = new byte[]{(byte) 0x4D, (byte) 0x4D, (byte) 0x00, (byte) 0x2A};
     private static final byte[] MAGIC_NUMBER_TIFF_LITTLE_ENDIAN = new byte[]{(byte) 0x49, (byte) 0x49, (byte) 0x2A, (byte) 0x00};
     private static final byte[] MAGIC_NUMBER_JPEG = new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xE0};
 
     int objectColumnNr;
-    int tifColumnNr;
+    int masterColumnNr;
     int volgNrColumnNr;
     int pidColumnNr;
     int jpegColumnNr;
     int jpeg2ColumnNr;
     int jpeg3ColumnNr;
+    int ocrColumnNr;
 
+    boolean ocrPresent;
     boolean jpegPresent;
     boolean jpeg2Present;
 
 
     private String dataDirLoc;
-    private String tifDirLoc;
-    private String jpegDirLoc;
-
-    private String[] tiffImageDirectoryArray;
-    private String[] jpegImageDirectorayArray;
 
     public ConcordanceValidator() {
 
@@ -75,9 +70,7 @@ public class ConcordanceValidator {
             if (columnNames[i].equals(OBJECT_COLUMN_NAME)) {
                 objectColumnNr = i;
             } else if (columnNames[i].equals(TIF_COLUMN_NAME)) {
-                tifColumnNr = i;
-                String[] tifColumnSplit = columnNames[i].split("/");
-                tifDirLoc = tifColumnSplit[0];
+                masterColumnNr = i;
             } else if (columnNames[i].equals(VOLGNR_COLUMN_NAME)) {
                 volgNrColumnNr = i;
             } else if (columnNames[i].equals(PID_COLUMN_NAME)) {
@@ -88,6 +81,9 @@ public class ConcordanceValidator {
             } else if (columnNames[i].equals(JPEG2_COLUMN_NAME)) {
                 jpeg2ColumnNr = i;
                 jpeg2Present = true;
+            } else if (columnNames[i].equals(OCR_COLUMN_NAME)) {
+                ocrColumnNr = i;
+                ocrPresent = true;
             }
 
         }
@@ -95,28 +91,6 @@ public class ConcordanceValidator {
 
     }
 
-
-    // makes an array of the files ending with 'extension'.
-    private String[] makeArrayFromImageDir(String dataDirLoc, final String extension) {
-
-        String imageDir = "";
-
-        if (extension.equals(TIFF_EXTENSION)) {
-            imageDir = tifDirLoc;
-        } else if (extension.equals(JPEG_EXTENSION)) {
-            imageDir = jpegDirLoc;
-        }
-
-        File dir = new File(dataDirLoc + File.separator + imageDir);
-
-        String[] result = dir.list(new FilenameFilter() {
-            public boolean accept(File dir, String filename) {
-                return filename.endsWith(extension);
-            }
-        });
-
-        return result;
-    }
 
     public ConcordanceValidator(File concordanceFile, String dataDirLoc) {
         this.dataDirLoc = dataDirLoc;
@@ -129,13 +103,18 @@ public class ConcordanceValidator {
 
             testRelationShips(concordanceFile);
 
-            testFileExistenceAndTestHeaders(concordanceFile, tifColumnNr);
+            testFileExistenceAndTestHeaders(concordanceFile, masterColumnNr);
 
             if (jpegPresent) {
                 testFileExistenceAndTestHeaders(concordanceFile, jpegColumnNr);
             }
+
             if (jpeg2Present) {
                 testFileExistenceAndTestHeaders(concordanceFile, jpeg2ColumnNr);
+            }
+
+            if (ocrPresent) {
+                testFileExistenceAndTestHeaders(concordanceFile, ocrColumnNr);
             }
 
         } catch (IOException e) {
@@ -162,21 +141,34 @@ public class ConcordanceValidator {
                 String[] columns = line.split(CSV_SEPARATOR);
 
 
-                String tifImage = columns[tifColumnNr].split("\\.")[0];
+                String tifImage = columns[masterColumnNr].split("\\.")[0];
                 String jpegImage = columns[jpegColumnNr].split("\\.")[0];
 
+                tifImage = tifImage.split("/")[1];
+                jpegImage = jpegImage.split("/")[1];
+
                 if (!tifImage.equals(jpegImage)) {
-                    System.err.println("Error: Difference in filenames between " + tifImage + " and " + jpegImage + "at line " + lineNr);
-                    return;
+                    System.err.println("Warning: Difference in filenames between " + tifImage + " and " + jpegImage + " at line " + lineNr);
                 }
 
                 if (jpeg2Present) {
-                    String jpeg2Image = columns[jpeg2ColumnNr].split(".")[0];
+                    String jpeg2Image = columns[jpeg2ColumnNr].split("\\.")[0];
+                    jpeg2Image = jpeg2Image.split("/")[1];
                     if (!jpeg2Image.equals(jpegImage)) {
-                        System.err.println("Error: Difference in filenames between " + jpeg2Image + " and " + jpegImage + "at line " + lineNr);
-                        return;
+                        System.err.println("Warning: Difference in filenames between " + jpeg2Image + " and " + jpegImage + " at line " + lineNr);
                     }
                 }
+
+
+                if (ocrPresent) {
+                    String ocr = columns[ocrColumnNr].split("\\.")[0];
+                    ocr = ocr.split("/")[1];
+                    if (!ocr.equals(jpegImage)) {
+                        System.err.println("Warning: Difference in filenames between " + ocr + " and " + jpegImage + " at line " + lineNr);
+                    }
+                }
+
+
 
                 lineNr++;
 
@@ -258,21 +250,29 @@ public class ConcordanceValidator {
     }
 
 
+    public static String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 && i < s.length() - 1)
+            ext = s.substring(i + 1).toLowerCase();
+
+        if (ext == null)
+            return "";
+        return ext;
+    }
+
     private void testHeader(File inputFile, int columnNr) {
         byte[] magicNumber;
-        String fileType;
+        String extension = getExtension(inputFile);
 
-        if (columnNr == tifColumnNr) {
+        if (extension.equals("tif") || extension.equals("tiff")) {
             magicNumber = MAGIC_NUMBER_TIFF_LITTLE_ENDIAN;
-            fileType = "TIFF";
-        } else if (columnNr == jpegColumnNr) {
+        } else if (extension.equals("jpg") || extension.equals("jpeg")) {
             magicNumber = MAGIC_NUMBER_JPEG;
-            fileType = "JPEG";
-        } else if (columnNr == jpeg2ColumnNr) {
-            magicNumber = MAGIC_NUMBER_JPEG;
-            fileType = "JPEG";
         } else {
-            System.out.println("Warning: cannot check header of file in column " + columnNr + ".");
+            System.out.println("Warning: cannot check header of file in column " + columnNr + ". File does not have an extension.");
             return;
         }
 
@@ -296,8 +296,11 @@ public class ConcordanceValidator {
 
             if (!Arrays.equals(b, magicNumber)) {
 
-                System.err.println("Error: The file " + inputFile + " is denoted as file type " + fileType + " but does not have the correct header.");
-                return;
+                // if TIF file and magic number incorrect, check Big Endian magic number too:
+                if (extension.equals("tif") || extension.equals("tiff") &&
+                        !Arrays.equals(b, MAGIC_NUMBER_TIFF_BIG_ENDIAN)) {
+                    System.err.println("Error: The file " + inputFile + " has extension " + extension + " but does not have the correct header.");
+                }
             }
 
         } catch (FileNotFoundException e) {
@@ -319,6 +322,7 @@ public class ConcordanceValidator {
         int lineNr = 2;
 
         ArrayList<String> concordanceFileList = new ArrayList<String>();
+        ArrayList<String> objectList = new ArrayList<String>();
 
         // skip the first line containing the column names:
         input.readLine();
@@ -338,8 +342,10 @@ public class ConcordanceValidator {
             }
 
             concordanceFileList.add(fileFromConcordance);
+            String subDirectory = columns[objectColumnNr];
+            objectList.add(subDirectory + File.separator + fileDir);
 
-            File file = new File(dataDirLoc + File.separator + fileFromConcordance);
+            File file = new File(dataDirLoc + File.separator + subDirectory + File.separator + fileFromConcordance);
 
             if (!file.exists()) {
                 System.err.println(ERROR_FILE_EXISTENCE);
@@ -347,42 +353,47 @@ public class ConcordanceValidator {
                 return;
             }
 
+
+            // test header of image files
             testHeader(file, columnNumber);
 
             lineNr++;
 
         }
 
-        File dir = new File(dataDirLoc + File.separator + fileDir);
 
-        String[] filesInDir = dir.list();
+        for (String subDirectory : objectList) {
+            File files = new File(dataDirLoc + File.separator + subDirectory);
 
-        for (String fileFromDir : filesInDir) {
+            String[] filesInDir = files.list();
 
-            fileExists = false;
-            lineNr = 2; // line 1 contains column names
-            for (String fileFromConcordance : concordanceFileList) {
+            for (String fileFromDir : filesInDir) {
 
-                // check for duplicates:
-                if (fileExists && fileFromDir.equals(fileFromConcordance)) {
-                    System.err.println(ERROR_CONCORDANCE_FILE_DUPLICATE);
-                    System.err.println("Line number: " + lineNr + ", entry: " + fileFromConcordance);
+                fileExists = false;
+                lineNr = 2; // line 1 contains column names
+                for (String fileFromConcordance : concordanceFileList) {
+
+                    // check for duplicates:
+                    if (fileExists && fileFromDir.equals(fileFromConcordance)) {
+                        System.err.println(ERROR_CONCORDANCE_FILE_DUPLICATE);
+                        System.err.println("Line number: " + lineNr + ", entry: " + fileFromConcordance);
+                        return;
+                    }
+
+                    String fileFromDirPath = fileDir + "/" + fileFromDir;
+                    if (fileFromDirPath.equals(fileFromConcordance)) fileExists = true;
+
+                }
+
+                if (!fileExists) {
+                    System.err.println(ERROR_CONCORDANCE_FILE_MISSING);
+                    System.err.println("File: " + files + File.separator + fileFromDir);
                     return;
                 }
 
-                String fileFromDirPath = fileDir + "/" + fileFromDir;
-                if (fileFromDirPath.equals(fileFromConcordance)) fileExists = true;
-
-            }
-
-            if (!fileExists) {
-                System.err.println(ERROR_CONCORDANCE_FILE_MISSING);
-                System.err.println("File: " + fileFromDir);
-                return;
             }
 
         }
-
         System.out.println("Concordance table " + fileDir + " <-> Directory " + fileDir + " test passed. All " + fileDir + " files in concordance" +
                 "table are present in " + fileDir + " directory, and all " + fileDir + " files in " + fileDir + " directory are present in concordance table.");
 
