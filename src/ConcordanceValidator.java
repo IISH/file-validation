@@ -105,6 +105,10 @@ public class ConcordanceValidator {
 
             testFileExistenceAndTestHeaders(concordanceFile, masterColumnNr);
 
+            testSubdirectories();
+
+            testFilenamesAndExtensions();
+
             if (jpegPresent) {
                 testFileExistenceAndTestHeaders(concordanceFile, jpegColumnNr);
             }
@@ -121,6 +125,15 @@ public class ConcordanceValidator {
             e.printStackTrace();
         }
 
+
+    }
+
+
+    private void testSubdirectories() {
+
+    }
+
+    private void testFilenamesAndExtensions() {
 
     }
 
@@ -167,7 +180,6 @@ public class ConcordanceValidator {
                         System.err.println("Warning: Difference in filenames between " + ocr + " and " + jpegImage + " at line " + lineNr);
                     }
                 }
-
 
 
                 lineNr++;
@@ -263,7 +275,7 @@ public class ConcordanceValidator {
         return ext;
     }
 
-    private void testHeader(File inputFile, int columnNr) {
+    private void testHeaderAndFilesize(File inputFile, int columnNr) {
         byte[] magicNumber;
         String extension = getExtension(inputFile);
 
@@ -355,7 +367,7 @@ public class ConcordanceValidator {
 
 
             // test header of image files
-            testHeader(file, columnNumber);
+            testHeaderAndFilesize(file, columnNumber);
 
             lineNr++;
 
