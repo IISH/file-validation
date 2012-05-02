@@ -1,0 +1,36 @@
+Error: volgnummer incorrect at line 5. Expected: 4
+Volgnummer test passed.
+Warning: Difference in filenames between MMIISG01_PM_000001 and MMIISG01_AF2_000001 at line 2
+Warning: Difference in filenames between MMIISG01_AF_000001 and MMIISG01_AF2_000001 at line 2
+Warning: Difference in filenames between MMIISG01_PM_000002 and MMIISG01_AF2_000002 at line 3
+Warning: Difference in filenames between MMIISG01_AF_000002 and MMIISG01_AF2_000002 at line 3
+Warning: Difference in filenames between MMIISG01_PM_000003 and MMIISG01_AF2_000003 at line 4
+Warning: Difference in filenames between MMIISG01_AF_000003 and MMIISG01_AF2_000003 at line 4
+Warning: Difference in filenames between MMIISG01_PM_000003 and MMIISG01_AF2_000003 at line 5
+Warning: Difference in filenames between MMIISG01_AF_000003 and MMIISG01_AF2_000003 at line 5
+Warning: Difference in filenames between MMIISG01_PM_000004 and MMIISG01_AF2_000004 at line 6
+Warning: Difference in filenames between MMIISG01_AF_000004 and MMIISG01_AF2_000004 at line 6
+Warning: Difference in filenames between MMIISG01_PM_000005 and MMIISG01_AF2_000005 at line 7
+Warning: Difference in filenames between MMIISG01_AF_000005 and MMIISG01_AF2_000005 at line 7
+Warning: Difference in filenames between MMIISG01_PM_000006 and MMIISG01_AF2_000006 at line 8
+Warning: Difference in filenames between MMIISG01_AF_000006 and MMIISG01_AF2_000006 at line 8
+Duplicate entry in concordance table.
+Line number: 2, entry: TIFF/MMIISG01_PM_000003.tif
+Concordance table TIFF <-> Directory TIFF test passed. All TIFF files in concordancetable are present in TIFF directory, and all TIFF files in TIFF directory are present in concordance table.
+Header test passed. All files of type TIFF denoted in the concordance table have the right headers.
+File size test passed. All files of type TIFF denoted in the concordance table have a size bigger than 10 bytes.
+Subdirectory prefix test passed. All data files have the right prefix: "MMIISG01"
+Duplicate entry in concordance table.
+Line number: 2, entry: JPEG-10/MMIISG01_AF2_000003.jpg
+Concordance table JPEG-10 <-> Directory JPEG-10 test passed. All JPEG-10 files in concordancetable are present in JPEG-10 directory, and all JPEG-10 files in JPEG-10 directory are present in concordance table.
+Header test passed. All files of type JPEG-10 denoted in the concordance table have the right headers.
+File size test passed. All files of type JPEG-10 denoted in the concordance table have a size bigger than 10 bytes.
+Subdirectory prefix test passed. All data files have the right prefix: "MMIISG01"
+Duplicate entry in concordance table.
+Line number: 2, entry: JPEG-7/MMIISG01_AF_000003.jpg
+Error: file in directory is not listed in the concordance table
+File: H:\projects\file-validation\src\test\resources\data\dorarussel_test16\JPEG-7\000001\MMIISG01_AF_000003.jpg
+Concordance table JPEG-7 <-> Directory JPEG-7 test passed. All JPEG-7 files in concordancetable are present in JPEG-7 directory, and all JPEG-7 files in JPEG-7 directory are present in concordance table.
+Header test passed. All files of type JPEG-7 denoted in the concordance table have the right headers.
+File size test passed. All files of type JPEG-7 denoted in the concordance table have a size bigger than 10 bytes.
+Subdirectory prefix test passed. All data files have the right prefix: "MMIISG01"

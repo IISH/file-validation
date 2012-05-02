@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.*;
+import java.net.URL;
 
 import static org.junit.Assert.assertTrue;
 
@@ -13,6 +14,8 @@ public class ConcordanceValidatorTest {
     static String dataDirLoc;
     static String prefix;
 
+    private static String testdataLocation = "";
+
     @BeforeClass
     public static void setUp() throws ClassNotFoundException {
 
@@ -21,9 +24,16 @@ public class ConcordanceValidatorTest {
 
 
     @Test
+    public void resources() {
+        URL url = getClass().getResource("/");
+        File file = new File(url.getFile());
+        testdataLocation += File.separator;
+    }
+
+    @Test
     public void createPidColumnTest() {
 
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel";
         prefix = "MMIISG01";
 
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -57,7 +67,7 @@ public class ConcordanceValidatorTest {
     public void parseColumnsTest() {
 
         // CSV separator test:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test1" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test1" + File.separator;
         prefix = "MMIISG01";
 
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -68,10 +78,10 @@ public class ConcordanceValidatorTest {
 
 
         // Missing column test:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test2" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test2" + File.separator;
         prefix = "MMIISG01";
 
-         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
 
         concordanceValidator.parseColumns();
 
@@ -79,7 +89,7 @@ public class ConcordanceValidatorTest {
 
 
         // Missing concordance table:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test3" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test3" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -91,13 +101,12 @@ public class ConcordanceValidatorTest {
     }
 
 
-
     // Dir 4
     @Test
-    public void testSubdirectoriesTest(){
+    public void testSubdirectoriesTest() {
 
         // wrong prefix test:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test4" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test4" + File.separator;
         prefix = "MMIISG01";
 
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -110,10 +119,10 @@ public class ConcordanceValidatorTest {
 
     // Dir 5
     @Test
-    public void testRelationshipsTest(){
+    public void testRelationshipsTest() {
 
         // difference in filename test;
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test5" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test5" + File.separator;
         prefix = "MMIISG01";
 
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -127,12 +136,12 @@ public class ConcordanceValidatorTest {
     }
 
 
-    // Dir 6
+    // Dir 6 7 8
     @Test
-    public void testVolgnummersTest(){
+    public void testVolgnummersTest() {
 
         // volgnummer not a number:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test6" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test6" + File.separator;
         prefix = "MMIISG01";
 
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -143,7 +152,7 @@ public class ConcordanceValidatorTest {
         assertTrue(ConcordanceValidator.exitCalled);
 
         // objectnummer not a number:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test7" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test7" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -154,7 +163,7 @@ public class ConcordanceValidatorTest {
         assertTrue(ConcordanceValidator.exitCalled);
 
         // volgnummer incorrect
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test8" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test8" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -166,7 +175,7 @@ public class ConcordanceValidatorTest {
 
 
         // object nummer incorrect
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test9" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test9" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -181,23 +190,23 @@ public class ConcordanceValidatorTest {
 
 
     @Test
-    public void testHeaderTest(){
+    public void testHeaderTest() {
 
         // unknown or incorrect extension of image file:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test10" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test10" + File.separator;
         prefix = "MMIISG01";
 
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
 
         File file = new File("C:\\data\\data\\dorarussel_test10\\JPEG-7\\000001\\MMIISG01_AF_000001.dat");
-        concordanceValidator.testHeaderAndFilesize(file,1);
+        concordanceValidator.testHeaderAndFilesize(file, 1);
 
 
         assertTrue(ConcordanceValidator.exitCalled);
 
 
         // filesize incorrect:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test11" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test11" + File.separator;
         prefix = "MMIISG01";
 
         file = new File("C:\\data\\data\\dorarussel_test11\\JPEG-10\\000001\\MMIISG01_AF2_000001.jpg");
@@ -209,22 +218,24 @@ public class ConcordanceValidatorTest {
         assertTrue(ConcordanceValidator.exitCalled);
 
         // incorrect image header:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test12" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test12" + File.separator;
         prefix = "MMIISG01";
+
+        file = new File("C:\\data\\data\\dorarussel_test12\\JPEG-10\\000001\\MMIISG01_AF2_000001.tif");
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
 
-        concordanceValidator.start();
+        concordanceValidator.testHeaderAndFilesize(file, 1);
 
         assertTrue(ConcordanceValidator.exitCalled);
 
     }
 
     @Test
-    public void testFileExistenceAndTestHeadersTest(){
+    public void testFileExistenceAndTestHeadersTest() {
 
-        // incorrect subdirectory:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test13" + File.separator;
+        // incorrect prefix:
+        dataDirLoc = testdataLocation + "dorarussel_test13" + File.separator;
         prefix = "MMIISG01";
 
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -235,7 +246,7 @@ public class ConcordanceValidatorTest {
 
 
         // File in concordance table does not exist on disk:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test14" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test14" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -252,7 +263,7 @@ public class ConcordanceValidatorTest {
 
 
         // different amount of directories than amount of objects in concordance file:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test15" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test15" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -268,7 +279,7 @@ public class ConcordanceValidatorTest {
         assertTrue(ConcordanceValidator.exitCalled);
 
         // duplicate entry in concordance table:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test16" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test16" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -278,7 +289,7 @@ public class ConcordanceValidatorTest {
         assertTrue(ConcordanceValidator.exitCalled);
 
         // file on disk not in concordance table:
-        dataDirLoc = "C:" + File.separator + "data" + File.separator + "data" + File.separator + "dorarussel_test17" + File.separator;
+        dataDirLoc = testdataLocation + "dorarussel_test17" + File.separator;
         prefix = "MMIISG01";
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
@@ -286,7 +297,6 @@ public class ConcordanceValidatorTest {
         concordanceValidator.start();
 
         assertTrue(ConcordanceValidator.exitCalled);
-
 
 
     }

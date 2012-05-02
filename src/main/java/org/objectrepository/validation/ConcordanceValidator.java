@@ -25,7 +25,7 @@ public class ConcordanceValidator {
     private static final String REPORT_FILE = "report.txt";
 
 
-    private static final int MINIMAL_FILE_SIZE = 200;
+    private static final int MINIMAL_FILE_SIZE = 10;
 
     private static final byte[] MAGIC_NUMBER_TIFF_BIG_ENDIAN = new byte[]{(byte) 0x4D, (byte) 0x4D, (byte) 0x00, (byte) 0x2A};
     private static final byte[] MAGIC_NUMBER_TIFF_LITTLE_ENDIAN = new byte[]{(byte) 0x49, (byte) 0x49, (byte) 0x2A, (byte) 0x00};
