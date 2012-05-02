@@ -18,7 +18,7 @@ public class ConcordanceValidatorTest {
 
     @BeforeClass
     public static void setUp() throws ClassNotFoundException {
-
+    //
 
     }
 
@@ -27,7 +27,7 @@ public class ConcordanceValidatorTest {
     public void resources() {
         URL url = getClass().getResource("/");
         File file = new File(url.getFile());
-        testdataLocation += File.separator;
+        testdataLocation = url.getFile() + "data" + File.separator;
     }
 
     @Test
