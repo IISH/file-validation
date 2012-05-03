@@ -25,7 +25,7 @@ public class ConcordanceValidator {
     private static final String REPORT_FILE = "report.txt";
 
 
-    private static final int MINIMAL_FILE_SIZE = 10;
+    private static final int MINIMAL_FILE_SIZE = 1000;
 
     private static final byte[] MAGIC_NUMBER_TIFF_BIG_ENDIAN = new byte[]{(byte) 0x4D, (byte) 0x4D, (byte) 0x00, (byte) 0x2A};
     private static final byte[] MAGIC_NUMBER_TIFF_LITTLE_ENDIAN = new byte[]{(byte) 0x49, (byte) 0x49, (byte) 0x2A, (byte) 0x00};
@@ -68,6 +68,7 @@ public class ConcordanceValidator {
         this.dataDirLoc = dataDirLoc;
         this.pidColumnPresent = false;
         this.prefix = prefix;
+        this.exitCalled = false;
 
         String concordanceFileLocation = dataDirLoc + File.separator + prefix + ".csv";
         this.concordanceFile = new File(concordanceFileLocation);
@@ -245,6 +246,7 @@ public class ConcordanceValidator {
     }
 
 
+    // check if every file in all subdirectories have the right prefix.
     public void testSubdirectories() {
 
         for (File dir : subDirList) {
@@ -258,7 +260,7 @@ public class ConcordanceValidator {
                 for (String object : objects) {
 
                     String prefixOfFile = object.split("_")[0];
-
+                    System.out.println(object);
                     if (!prefixOfFile.equals(prefix)) {
 
                         writeErrorLog("Error: file " + object + " has incorrect prefix. Expected \"" + prefix + "\". Encountered: \"" + prefixOfFile + "\"");
@@ -421,7 +423,7 @@ public class ConcordanceValidator {
     }
 
     public void testHeaderAndFilesize(File inputFile, int columnNr) {
-        byte[] magicNumber;
+        byte[] magicNumber = {};
         String extension = getExtension(inputFile);
 
         if (extension.equals("tif") || extension.equals("tiff")) {
@@ -429,8 +431,8 @@ public class ConcordanceValidator {
         } else if (extension.equals("jpg") || extension.equals("jpeg")) {
             magicNumber = MAGIC_NUMBER_JPEG;
         } else {
-            writeLog("Warning: cannot check header of file in column " + columnNr + ". File does not have a recognizable extension.");
-            return;
+            writeLog("Error: cannot check header of file " + inputFile + ". File does not have a recognizable extension.");
+            exit();
         }
 
 
@@ -440,7 +442,6 @@ public class ConcordanceValidator {
 
 
             FileInputStream fis = new FileInputStream(inputFile);
-
             if (inputFile.length() < MINIMAL_FILE_SIZE) {
 
                 writeErrorLog("Error: file " + inputFile + " has size smaller than limit of " + MINIMAL_FILE_SIZE + " bytes");
@@ -539,7 +540,6 @@ public class ConcordanceValidator {
             objectList.add(objectNr);
 
             File file = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr + File.separator + fileWithoutSubdir);
-
             if (!file.exists()) {
                 writeErrorLog(ERROR_FILE_EXISTENCE);
                 writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
