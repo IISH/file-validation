@@ -302,6 +302,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.start();
 
+
         assertTrue(ConcordanceValidator.exitCalled);
 
 
