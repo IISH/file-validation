@@ -444,7 +444,6 @@ public class ConcordanceValidator {
 
             byte[] b = new byte[4];
 
-
             FileInputStream fis = new FileInputStream(inputFile);
             if (inputFile.length() < MINIMAL_FILE_SIZE) {
 
@@ -503,6 +502,8 @@ public class ConcordanceValidator {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+
+
 
         exitCalled = true;
         //System.exit(1);
