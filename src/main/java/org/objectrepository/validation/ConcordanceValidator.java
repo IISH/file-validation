@@ -1,6 +1,7 @@
 package org.objectrepository.validation;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -75,8 +76,11 @@ public class ConcordanceValidator {
 
         // setup the file to log all output:
         File reportFile = new File(dataDirLoc + File.separator + REPORT_FILE);
+
         try {
+
             reportOutput = new BufferedWriter(new FileWriter(reportFile));
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -15,12 +15,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-      <testResources>
-        <testResource>
-          <directory>src/test/resources/data</directory>
-        </testResource>
-      </testResources>
-    </build>
 
 </project>
