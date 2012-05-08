@@ -96,6 +96,8 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.parseColumns();
 
+
+
         assertTrue(ConcordanceValidator.exitCalled);
 
     }
