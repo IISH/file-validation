@@ -18,7 +18,7 @@ public class ConcordanceValidator {
     private static final String JPEG2_COLUMN_NAME = "JPEG-10";
     private static final String OCR_COLUMN_NAME = "OCR";
 
-    private static final String CSV_SEPARATOR = ";";
+    private static final String CSV_SEPARATOR = ",";
 
     private static final String ERROR_FILE_EXISTENCE = "Error: file entry in concordance table does not exist in directory";
     private static final String ERROR_CONCORDANCE_FILE_MISSING = "Error: file in directory is not listed in the concordance table";
