@@ -13,6 +13,7 @@ public class ConcordanceValidatorTest {
 
     static String dataDirLoc;
     static String prefix;
+    static String pidPrefix;
 
     private static String testdataLocation = "";
 
@@ -35,8 +36,9 @@ public class ConcordanceValidatorTest {
 
         dataDirLoc = testdataLocation + "dorarussel";
         prefix = "MMIISG01";
+        pidPrefix = "10662";
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.createPidColumn();
 
@@ -70,7 +72,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test1" + File.separator;
         prefix = "MMIISG01";
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
 
@@ -81,7 +83,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test2" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
 
@@ -92,7 +94,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test3" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
 
@@ -111,7 +113,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test4" + File.separator;
         prefix = "MMIISG01";
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         try {
             concordanceValidator.parseColumns();
@@ -133,7 +135,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test5" + File.separator;
         prefix = "MMIISG01";
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
 
@@ -152,7 +154,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test6" + File.separator;
         prefix = "MMIISG01";
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
@@ -163,7 +165,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test7" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
@@ -174,7 +176,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test8" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
@@ -186,7 +188,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test9" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
@@ -204,7 +206,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test10" + File.separator;
         prefix = "MMIISG01";
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         File file = new File(dataDirLoc + "JPEG-7" + File.separator + "000001" + File.separator + "MMIISG01_AF_000001.dat");
         concordanceValidator.testHeaderAndFilesize(file, 1);
@@ -219,7 +221,7 @@ public class ConcordanceValidatorTest {
 
         file = new File(dataDirLoc + "JPEG-10" + File.separator + "000001" + File.separator + "MMIISG01_AF2_000001.jpg");
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
@@ -231,7 +233,7 @@ public class ConcordanceValidatorTest {
 
         file = new File(dataDirLoc + "JPEG-10" + File.separator + "000001" + File.separator + "MMIISG01_AF2_000001.tif");
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
@@ -246,7 +248,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test13" + File.separator;
         prefix = "MMIISG01";
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.start();
 
@@ -257,7 +259,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test14" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
 
@@ -274,7 +276,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test15" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.parseColumns();
 
@@ -290,7 +292,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test16" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.start();
 
@@ -300,7 +302,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test17" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
 
         concordanceValidator.start();
 

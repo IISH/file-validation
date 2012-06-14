@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class ConcordanceValidator {
 
@@ -57,6 +58,7 @@ public class ConcordanceValidator {
 
     private String dataDirLoc;
     private String prefix;
+    private String pidPrefix;
     private BufferedWriter reportOutput;
 
     File concordanceFile;
@@ -65,11 +67,12 @@ public class ConcordanceValidator {
 
     }
 
-    public ConcordanceValidator(String dataDirLoc, String prefix) {
+    public ConcordanceValidator(String dataDirLoc, String prefix, String pidPrefix) {
         this.dataDirLoc = dataDirLoc;
         this.pidColumnPresent = false;
         this.prefix = prefix;
         this.exitCalled = false;
+        this.pidPrefix = pidPrefix;
 
         String concordanceFileLocation = dataDirLoc + File.separator + prefix + ".csv";
         this.concordanceFile = new File(concordanceFileLocation);
@@ -155,11 +158,15 @@ public class ConcordanceValidator {
             output.write(outputLine + "\r\n");
 
             while ((inputLine = input.readLine()) != null) {
+                String iisgPid = pidPrefix + "/";
+                UUID id = UUID.randomUUID();
+
+                String pid = iisgPid + id;
 
                 if (inputLine.charAt(inputLine.length() - 1) == CSV_SEPARATOR.charAt(0)) {
-                    outputLine = inputLine + "[pid string]";
+                    outputLine = inputLine + pid;
                 } else {
-                    outputLine = inputLine + CSV_SEPARATOR + "[pid string]";
+                    outputLine = inputLine + CSV_SEPARATOR + pid;
                 }
 
                 output.write(outputLine + "\r\n");

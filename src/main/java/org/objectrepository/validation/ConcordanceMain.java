@@ -11,10 +11,11 @@ public class ConcordanceMain {
     private static final String[] EXPECT = {
             "-dataDir",
             "-prefix",
+            "-pidprefix",
     };
 
 
-    public ConcordanceMain(String dataDirLoc, String prefix) {
+    public ConcordanceMain(String dataDirLoc, String prefix, String pidPrefix) {
 
         // create array of strings of all tiff images in the selected directory:
 
@@ -22,7 +23,7 @@ public class ConcordanceMain {
         File concordanceFile = new File(concordanceFileLocation);
 
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.start();
 
     }
@@ -52,7 +53,7 @@ public class ConcordanceMain {
             }
         }
 
-        ConcordanceMain concordanceMain = new ConcordanceMain(map.get("-dataDir"), map.get("-prefix"));
+        ConcordanceMain concordanceMain = new ConcordanceMain(map.get("-dataDir"), map.get("-prefix"), map.get("-pidprefix"));
 
     }
 }
