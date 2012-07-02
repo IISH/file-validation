@@ -81,7 +81,6 @@ public class ConcordanceValidator {
         File reportFile = new File(dataDirLoc + File.separator + REPORT_FILE);
 
         try {
-
             reportOutput = new BufferedWriter(new FileWriter(reportFile));
 
         } catch (IOException e) {
@@ -139,7 +138,6 @@ public class ConcordanceValidator {
     public void createPidColumn() {
 
         File tempConcordanceFile = new File(dataDirLoc + File.separator + "concordanceFileTemp.csv");
-
         try {
             BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
             BufferedWriter output = new BufferedWriter(new FileWriter(tempConcordanceFile));
@@ -556,12 +554,13 @@ public class ConcordanceValidator {
                 writeErrorLog(ERROR_FILE_EXISTENCE);
                 writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
                 exit();
-            }
+            } else {
 
 
             // test header of image files
-            testHeaderAndFilesize(file, columnNumber);
+                testHeaderAndFilesize(file, columnNumber);
 
+            }
             lineNr++;
 
         }

@@ -27,13 +27,13 @@ public class ConcordanceValidatorTest {
     @Test
     public void resources() {
         URL url = getClass().getResource("/");
-        File file = new File(url.getFile());
         testdataLocation = url.getFile() + "data" + File.separator;
+        System.out.println(testdataLocation);
+
     }
 
     @Test
     public void createPidColumnTest() {
-
         dataDirLoc = testdataLocation + "dorarussel";
         prefix = "MMIISG01";
         pidPrefix = "10662";
@@ -54,7 +54,7 @@ public class ConcordanceValidatorTest {
         try {
             inputLine = input.readLine();
 
-            String[] inputSplit = inputLine.split(";");
+            String[] inputSplit = inputLine.split(",");
 
             assertTrue(inputSplit[inputSplit.length - 1].equals("PID"));
 
