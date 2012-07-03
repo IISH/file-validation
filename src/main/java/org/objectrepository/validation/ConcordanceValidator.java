@@ -33,6 +33,7 @@ public class ConcordanceValidator {
     private static final byte[] MAGIC_NUMBER_TIFF_LITTLE_ENDIAN = new byte[]{(byte) 0x49, (byte) 0x49, (byte) 0x2A, (byte) 0x00};
     private static final byte[] MAGIC_NUMBER_JPEG = new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xE0};
 
+
     int objectColumnNr;
     int masterColumnNr;
     int volgNrColumnNr;
@@ -53,6 +54,7 @@ public class ConcordanceValidator {
     // for testing purposes:
     public static boolean exitCalled;
     public static boolean warning;
+    boolean isUnitTesting = false;
 
     ArrayList<File> subDirList = new ArrayList<File>();
 
@@ -509,9 +511,12 @@ public class ConcordanceValidator {
 //        }
 
 
-
+        System.getProperties();
         exitCalled = true;
-        //System.exit(1);
+
+        if(!isUnitTesting) {
+            System.exit(0);
+        }
     }
 
     public void testFileExistenceAndTestHeaders(int columnNumber) throws IOException {
