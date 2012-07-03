@@ -9,10 +9,12 @@ import java.util.UUID;
 
 public class ConcordanceValidator {
 
-
-    private static final String OBJECT_COLUMN_NAME = "Objnr";
+    // mandatory columns:
+    private static final String OBJECT_COLUMN_NAME = "objnr";
     private static final String VOLGNR_COLUMN_NAME = "volgnr";
-    private static final String TIF_COLUMN_NAME = "TIFF";
+    private static final String TIF_COLUMN_NAME = "master";
+
+    // optional columns:
     private static final String PID_COLUMN_NAME = "PID";
     private static final String JPEG_COLUMN_NAME = "JPEG-7";
     private static final String JPEG2_COLUMN_NAME = "JPEG-10";
