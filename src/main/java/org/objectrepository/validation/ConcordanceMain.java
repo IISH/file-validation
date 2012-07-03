@@ -6,12 +6,12 @@ import java.util.Map;
 
 public class ConcordanceMain {
 
-    private static final String USAGE = "Usage: java -dataDir [root directory containing tif, jpeg etc. directories] -prefix [project prefix]";
+    private static final String USAGE = "Usage: java -fileSet [root directory containing tif, jpeg etc. directories] -prefix [project prefix] -na [PID prefix]";
 
     private static final String[] EXPECT = {
-            "-dataDir",
+            "-fileSet",
             "-prefix",
-            "-pidprefix",
+            "-na",
     };
 
 
@@ -53,7 +53,7 @@ public class ConcordanceMain {
             }
         }
 
-        ConcordanceMain concordanceMain = new ConcordanceMain(map.get("-dataDir"), map.get("-prefix"), map.get("-pidprefix"));
+        ConcordanceMain concordanceMain = new ConcordanceMain(map.get("-fileSet"), map.get("-prefix"), map.get("-na"));
 
     }
 }
