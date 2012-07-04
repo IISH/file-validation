@@ -587,12 +587,14 @@ public class ConcordanceValidator {
                 subDirTemp += fileWithSubdirArray[i] + File.separator;
             }
 
-            if (!subDir.equals("") && !subDir.equals(subDirTemp)) {
-                writeErrorLog("Error: incorrect directory at line " + lineNr + " column " + columnNumber);
-                exit();
-            } else {
-                subDir = subDirTemp;
-            }
+            subDir = subDirTemp;
+//
+//            if (!subDir.equals("") && !subDir.equals(subDirTemp)) {
+//                writeErrorLog("Error: incorrect directory at line " + lineNr + " column " + columnNumber);
+//                exit();
+//            } else {
+//                subDir = subDirTemp;
+//            }
 
             concordanceFileList.add(fileWithSubdir);
             String objectNr = columns[objectColumnNr];
@@ -601,22 +603,11 @@ public class ConcordanceValidator {
             File file = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr + File.separator + fileWithoutSubdir);
             if (!file.exists()) {
 
-                // workaround for incorrect format of testdata, includes basedir in directory paths of images:
-                String[] subDirWorkaroundArray = subDir.split("/");
-                String subDirWorkaround = "";
-                for(int i = 1 ; i < subDirWorkaroundArray.length ; i++){
-                    subDirWorkaround += subDirWorkaroundArray[i] + File.separator;
-                }
+                file = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr + File.separator + fileWithoutSubdir);
 
-                file = new File(dataDirLoc + File.separator + subDirWorkaround + File.separator + objectNr + File.separator + fileWithoutSubdir);
-                if(!file.exists()){
-                    writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
-                    writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
-                    exit();
-                } else {
-                    testHeaderAndFilesize(file, columnNumber);
-                }
-
+                writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
+                writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
+                exit();
             } else {
 
                 // test header of image files
