@@ -576,8 +576,16 @@ public class ConcordanceValidator {
 
             String[] columns = line.split(CSV_SEPARATOR);
             String fileWithSubdir = columns[columnNumber];
-            String subDirTemp = columns[columnNumber].split("/")[0];
-            String fileWithoutSubdir = columns[columnNumber].split("/")[1];
+
+            String[] fileWithSubdirArray = fileWithSubdir.split("/");
+
+            String fileWithoutSubdir = fileWithSubdirArray[fileWithSubdirArray.length - 1];
+
+            String subDirTemp = "";
+
+            for(int i = 0 ; i < (fileWithSubdirArray.length - 1) ; i++){
+                subDirTemp += fileWithSubdirArray[i] + File.separator;
+            }
 
             if (!subDir.equals("") && !subDir.equals(subDirTemp)) {
                 writeErrorLog("Error: incorrect directory at line " + lineNr + " column " + columnNumber);
