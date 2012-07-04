@@ -330,4 +330,17 @@ public class ConcordanceValidatorTest {
 
     }
 
+//    @Test
+//    public void pathnameTest(){
+//        dataDirLoc = testdataLocation + "dorarussel_test18" + File.separator;
+//        prefix = "MMIISG01";
+//
+//        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
+//        concordanceValidator.isUnitTesting = true;
+//
+//        concordanceValidator.start();
+//
+//
+//    }
+
 }

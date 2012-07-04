@@ -315,6 +315,9 @@ public class ConcordanceValidator {
 
                 String[] tifImageArray = tifImage.split("/");
 
+//                System.out.println(tifImage);
+//                System.out.println(jpegImage);
+
                 if (tifImageArray.length < 2) {
                     writeErrorLog("Incorrect path name for master image at line " + lineNr + ", column " + masterColumnNr);
                     exit();
@@ -343,7 +346,7 @@ public class ConcordanceValidator {
                     String[] jpeg2ImageArray = jpeg2Image.split("/");
 
                     if (jpegImageArray.length < 2) {
-                        writeErrorLog("Incorrect path name for jpeg image at line " + lineNr + ", column " + jpeg2ColumnNr);
+                        writeErrorLog("Incorrect path name for jpeg2 image at line " + lineNr + ", column " + jpeg2ColumnNr);
                         exit();
                     }
 
@@ -589,7 +592,7 @@ public class ConcordanceValidator {
 
             File file = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr + File.separator + fileWithoutSubdir);
             if (!file.exists()) {
-                writeErrorLog(ERROR_FILE_EXISTENCE);
+                writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
                 writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
                 exit();
             } else {
