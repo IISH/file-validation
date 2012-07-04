@@ -598,11 +598,25 @@ public class ConcordanceValidator {
             String objectNr = columns[objectColumnNr];
             objectList.add(objectNr);
 
-            File file = new File(dataDirLoc + fileWithSubdir);
+            File file = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr + File.separator + fileWithoutSubdir);
             if (!file.exists()) {
-                writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
-                writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
-                exit();
+
+                // workaround for incorrect format of testdata, includes basedir in directory paths of images:
+                String[] subDirWorkaroundArray = subDir.split("/");
+                String subDirWorkaround = "";
+                for(int i = 1 ; i < subDirWorkaroundArray.length ; i++){
+                    subDirWorkaround += subDirWorkaroundArray[i] + File.separator;
+                }
+
+                file = new File(dataDirLoc + File.separator + subDirWorkaround + File.separator + objectNr + File.separator + fileWithoutSubdir);
+                if(!file.exists()){
+                    writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
+                    writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
+                    exit();
+                } else {
+                    testHeaderAndFilesize(file, columnNumber);
+                }
+
             } else {
 
                 // test header of image files
