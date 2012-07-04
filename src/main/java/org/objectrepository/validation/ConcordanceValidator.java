@@ -239,10 +239,10 @@ public class ConcordanceValidator {
 
             }
 
-            if(!objectColumnPresent || !masterColumnPresent || !volgNrColumnPresent) {
+            if (!objectColumnPresent || !masterColumnPresent || !volgNrColumnPresent) {
 
                 writeErrorLog("One of the mandatory colunms " + OBJECT_COLUMN_NAME + ", "
-                        + TIF_COLUMN_NAME + ", " + VOLGNR_COLUMN_NAME + " is missing in the concordance table" );
+                        + TIF_COLUMN_NAME + ", " + VOLGNR_COLUMN_NAME + " is missing in the concordance table");
                 exit();
 
             }
@@ -310,12 +310,27 @@ public class ConcordanceValidator {
 
                 String[] columns = line.split(CSV_SEPARATOR);
 
-
                 String tifImage = columns[masterColumnNr].split("\\.")[0];
                 String jpegImage = columns[jpegColumnNr].split("\\.")[0];
 
-                tifImage = tifImage.split("/")[1];
-                jpegImage = jpegImage.split("/")[1];
+                String[] tifImageArray = tifImage.split("/");
+
+                if (tifImageArray.length < 2) {
+                    writeErrorLog("Incorrect path name for master image at line " + lineNr + ", column " + masterColumnNr);
+                    exit();
+                }
+
+                tifImage = tifImageArray[tifImageArray.length - 1];
+
+                String[] jpegImageArray = jpegImage.split("/");
+
+                if (jpegImageArray.length < 2) {
+                    writeErrorLog("Incorrect path name for jpeg image at line " + lineNr + ", column " + jpegColumnNr);
+                    exit();
+                }
+
+                jpegImage = jpegImageArray[jpegImageArray.length - 1];
+
 
                 if (!tifImage.equals(jpegImage)) {
                     writeErrorLog("Warning: Difference in filenames between " + tifImage + " and " + jpegImage + " at line " + lineNr);
@@ -324,7 +339,16 @@ public class ConcordanceValidator {
 
                 if (jpeg2Present) {
                     String jpeg2Image = columns[jpeg2ColumnNr].split("\\.")[0];
-                    jpeg2Image = jpeg2Image.split("/")[1];
+
+                    String[] jpeg2ImageArray = jpeg2Image.split("/");
+
+                    if (jpegImageArray.length < 2) {
+                        writeErrorLog("Incorrect path name for jpeg image at line " + lineNr + ", column " + jpeg2ColumnNr);
+                        exit();
+                    }
+
+                    jpeg2Image = jpeg2ImageArray[jpeg2ImageArray.length - 1];
+
                     if (!jpeg2Image.equals(jpegImage)) {
                         writeErrorLog("Warning: Difference in filenames between " + jpeg2Image + " and " + jpegImage + " at line " + lineNr);
                         warning = true;
@@ -334,7 +358,14 @@ public class ConcordanceValidator {
 
                 if (ocrPresent) {
                     String ocr = columns[ocrColumnNr].split("\\.")[0];
-                    ocr = ocr.split("/")[1];
+                    String[] ocrArray = ocr.split("/");
+
+                    if (ocrArray.length < 2) {
+                        writeErrorLog("Incorrect path name at line " + lineNr + ", column " + ocrColumnNr);
+                    }
+
+                    ocr = ocrArray[ocrArray.length - 1];
+
                     if (!ocr.equals(jpegImage)) {
                         writeErrorLog("Warning: Difference in filenames between " + ocr + " and " + jpegImage + " at line " + lineNr);
                         warning = true;
@@ -516,7 +547,7 @@ public class ConcordanceValidator {
         System.getProperties();
         exitCalled = true;
 
-        if(!isUnitTesting) {
+        if (!isUnitTesting) {
             System.exit(0);
         }
     }
@@ -564,7 +595,7 @@ public class ConcordanceValidator {
             } else {
 
 
-            // test header of image files
+                // test header of image files
                 testHeaderAndFilesize(file, columnNumber);
 
             }
