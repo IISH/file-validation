@@ -518,6 +518,7 @@ public class ConcordanceValidator {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            exit();
         } catch (IOException e) {
             e.printStackTrace();
         }
