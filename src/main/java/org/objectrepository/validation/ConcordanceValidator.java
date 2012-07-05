@@ -590,7 +590,7 @@ public class ConcordanceValidator {
             String[] fileWithSubdirArray = fileWithSubdir.split("/");
 
             subDir = "";
-            rootOfImages = "";
+
             for(int i = 1 ; i < (fileWithSubdirArray.length - 1) ; i++){
                 subDir += fileWithSubdirArray[i] + File.separator;
             }
@@ -631,7 +631,7 @@ public class ConcordanceValidator {
         objectList.addAll(h);
 
         // save the directory for further tests:
-        File subDirFile = new File(baseDir + File.separator + rootOfImages);
+        File subDirFile = new File(baseDir + File.separator + subDir);
         subDirList.add(subDirFile);
 
         // check if the amount of subdirectories (objectnumbers) is the same as in concordance table:
