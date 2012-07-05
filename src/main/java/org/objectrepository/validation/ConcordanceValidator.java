@@ -485,7 +485,7 @@ public class ConcordanceValidator {
         } else if (extension.equals("jpg") || extension.equals("jpeg")) {
             magicNumber = MAGIC_NUMBER_JPEG;
         } else {
-            writeLog("Error: cannot check header of file " + inputFile + ". File does not have a recognizable extension.");
+            writeLog("Error: cannot check header of file " + inputFile + ". File does not have a recognizable extension: " + extension);
             exit();
         }
 
@@ -610,6 +610,7 @@ public class ConcordanceValidator {
                 writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
                 writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
                 exit();
+
             } else {
 
                 // test header of image files
