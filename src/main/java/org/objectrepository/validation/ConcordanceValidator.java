@@ -659,12 +659,19 @@ public class ConcordanceValidator {
         // check if all files in the data folders exist in the concordance file:
         for (String objectNr : objectList) {
             File files = new File(baseDir + File.separator + subDir + File.separator + objectNr);
+
             String[] filesInDir = files.list();
             for (String fileFromDir : filesInDir) {
                 fileExists = false;
                 lineNr = 2; // line 1 contains column names
                 for (String fileFromConcordance : concordanceFileList) {
+
                     String fileFromDirPath = subDir + "/" + fileFromDir;
+                    File tmp = new File(fileFromDirPath);
+                    fileFromDirPath = tmp.getName();
+
+                    File tmp2 = new File(fileFromConcordance);
+                    fileFromConcordance = tmp2.getName();
 
                     // check for duplicates:
                     if (fileExists && fileFromDirPath.equals(fileFromConcordance)) {
@@ -673,23 +680,27 @@ public class ConcordanceValidator {
                         exit();
                     }
 
-                    if (fileFromDirPath.equals(fileFromConcordance)) fileExists = true;
+                    if (fileFromDirPath.equals(fileFromConcordance)){
+//                        System.out.println(fileFromDirPath + " == " + fileFromConcordance);
+
+                        fileExists = true;
+                    }
 
                 }
 
                 if (!fileExists) {
                     writeErrorLog(ERROR_CONCORDANCE_FILE_MISSING);
                     writeErrorLog("File: " + files + File.separator + fileFromDir);
-                    for(String fileFromConcordance : concordanceFileList){
-                        writeErrorLog("fileFromConcordance: " + fileFromConcordance);
-
-                    }
-
-                    for(String filetjeFromDir:filesInDir){
-                        String filetjeFromDirPath = subDir + "/" + filetjeFromDir;
-                        writeErrorLog("filetjeFromDirPath: " + filetjeFromDirPath);
-
-                    }
+//                    for(String fileFromConcordance : concordanceFileList){
+//                        writeErrorLog("fileFromConcordance: " + fileFromConcordance);
+//
+//                    }
+//
+//                    for(String filetjeFromDir:filesInDir){
+//                        String filetjeFromDirPath = subDir + "/" + filetjeFromDir;
+//                        writeErrorLog("filetjeFromDirPath: " + filetjeFromDirPath);
+//
+//                    }
 
                     exit();
                 }
