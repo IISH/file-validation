@@ -569,6 +569,7 @@ public class ConcordanceValidator {
         BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
         String line;
         String subDir = "";
+        String rootOfImages = "";
         boolean fileExists;
 
         // line 1 contains column names so start with line 2:
@@ -589,10 +590,11 @@ public class ConcordanceValidator {
             String[] fileWithSubdirArray = fileWithSubdir.split("/");
 
             subDir = "";
-
-            for(int i = 0 ; i < (fileWithSubdirArray.length - 1) ; i++){
+            rootOfImages = "";
+            for(int i = 1 ; i < (fileWithSubdirArray.length - 1) ; i++){
                 subDir += fileWithSubdirArray[i] + File.separator;
             }
+
 //
 //            if (!subDir.equals("") && !subDir.equals(subDirTemp)) {
 //                writeErrorLog("Error: incorrect directory at line " + lineNr + " column " + columnNumber);
@@ -629,7 +631,7 @@ public class ConcordanceValidator {
         objectList.addAll(h);
 
         // save the directory for further tests:
-        File subDirFile = new File(baseDir + File.separator + subDir);
+        File subDirFile = new File(baseDir + File.separator + rootOfImages);
         subDirList.add(subDirFile);
 
         // check if the amount of subdirectories (objectnumbers) is the same as in concordance table:
