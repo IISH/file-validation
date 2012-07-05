@@ -516,6 +516,7 @@ public class ConcordanceValidator {
                 }
             }
 
+            fis.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             exit();
