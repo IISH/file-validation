@@ -680,6 +680,17 @@ public class ConcordanceValidator {
                 if (!fileExists) {
                     writeErrorLog(ERROR_CONCORDANCE_FILE_MISSING);
                     writeErrorLog("File: " + files + File.separator + fileFromDir);
+                    for(String fileFromConcordance : concordanceFileList){
+                        writeErrorLog("fileFromConcordance: " + fileFromConcordance);
+
+                    }
+
+                    for(String filetjeFromDir:filesInDir){
+                        String filetjeFromDirPath = subDir + "/" + filetjeFromDir;
+                        writeErrorLog("filetjeFromDirPath: " + filetjeFromDirPath);
+
+                    }
+
                     exit();
                 }
 
