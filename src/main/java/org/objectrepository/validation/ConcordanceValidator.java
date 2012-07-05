@@ -643,7 +643,8 @@ public class ConcordanceValidator {
 
         if (subdirsCheck.length != objectList.size()) {
 
-            writeErrorLog("Amount of directories found in " + subDirFile + " is not the same as the amount of objects found in concordance file.");
+            writeErrorLog("Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")" );
+            writeErrorLog("baseDir: " + baseDir + ", subDir: " + subDir);
             exit();
 
         }
