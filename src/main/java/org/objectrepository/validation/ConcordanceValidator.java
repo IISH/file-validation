@@ -89,7 +89,12 @@ public class ConcordanceValidator {
 
         try {
             reportOutput = new BufferedWriter(new FileWriter(reportFile));
+            if(reportOutput == null){
 
+                System.err.println("Could not create log output file: " + reportFile);
+                exit();
+
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
