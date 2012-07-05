@@ -565,11 +565,9 @@ public class ConcordanceValidator {
     }
 
     public void testFileExistenceAndTestHeaders(int columnNumber) throws IOException {
-
         BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
         String line;
         String subDir = "";
-        String rootOfImages = "";
         boolean fileExists;
 
         // line 1 contains column names so start with line 2:
@@ -587,13 +585,19 @@ public class ConcordanceValidator {
             String[] columns = line.split(CSV_SEPARATOR);
             String fileWithSubdir = columns[columnNumber];
 
+
+
             String[] fileWithSubdirArray = fileWithSubdir.split("/");
 
-            subDir = "";
 
-            for(int i = 1 ; i < (fileWithSubdirArray.length - 1) ; i++){
-                subDir += fileWithSubdirArray[i] + File.separator;
+            if(lineNr == 2){
+                subDir = "";
+                for(int i = 1 ; i < (fileWithSubdirArray.length - 2) ; i++){
+                    subDir += fileWithSubdirArray[i] + File.separator;
+                }
+                writeErrorLog("subDir: " + subDir);
             }
+
 
 //
 //            if (!subDir.equals("") && !subDir.equals(subDirTemp)) {
@@ -655,7 +659,6 @@ public class ConcordanceValidator {
         // check if all files in the data folders exist in the concordance file:
         for (String objectNr : objectList) {
             File files = new File(baseDir + File.separator + subDir + File.separator + objectNr);
-
             String[] filesInDir = files.list();
             for (String fileFromDir : filesInDir) {
                 fileExists = false;
