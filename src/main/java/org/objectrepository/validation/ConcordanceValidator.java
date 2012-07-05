@@ -63,6 +63,7 @@ public class ConcordanceValidator {
     private String dataDirLoc;
     private String prefix;
     private String pidPrefix;
+    private String baseDir;
     private BufferedWriter reportOutput;
 
     File concordanceFile;
@@ -72,13 +73,15 @@ public class ConcordanceValidator {
     }
 
     public ConcordanceValidator(String dataDirLoc, String prefix, String pidPrefix) {
-        this.dataDirLoc = dataDirLoc;
         this.pidColumnPresent = false;
         this.prefix = prefix;
+        this.dataDirLoc = dataDirLoc + File.separator + this.prefix;
         this.exitCalled = false;
         this.pidPrefix = pidPrefix;
+        this.baseDir = dataDirLoc;
 
-        String concordanceFileLocation = dataDirLoc + File.separator + prefix + ".csv";
+        String concordanceFileLocation = this.dataDirLoc + File.separator + prefix + ".csv";
+
         this.concordanceFile = new File(concordanceFileLocation);
 
         // setup the file to log all output:
@@ -579,15 +582,11 @@ public class ConcordanceValidator {
 
             String[] fileWithSubdirArray = fileWithSubdir.split("/");
 
-            String fileWithoutSubdir = fileWithSubdirArray[fileWithSubdirArray.length - 1];
-
-            String subDirTemp = "";
+            subDir = "";
 
             for(int i = 0 ; i < (fileWithSubdirArray.length - 1) ; i++){
-                subDirTemp += fileWithSubdirArray[i] + File.separator;
+                subDir += fileWithSubdirArray[i] + File.separator;
             }
-
-            subDir = subDirTemp;
 //
 //            if (!subDir.equals("") && !subDir.equals(subDirTemp)) {
 //                writeErrorLog("Error: incorrect directory at line " + lineNr + " column " + columnNumber);
@@ -596,14 +595,12 @@ public class ConcordanceValidator {
 //                subDir = subDirTemp;
 //            }
 
-            concordanceFileList.add(fileWithSubdir);
+            concordanceFileList.add(baseDir + File.separator + fileWithSubdir);
             String objectNr = columns[objectColumnNr];
             objectList.add(objectNr);
 
-            File file = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr + File.separator + fileWithoutSubdir);
+            File file = new File(baseDir + File.separator + fileWithSubdir);
             if (!file.exists()) {
-
-                file = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr + File.separator + fileWithoutSubdir);
 
                 writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
                 writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
@@ -625,11 +622,17 @@ public class ConcordanceValidator {
         objectList.addAll(h);
 
         // save the directory for further tests:
-        File subDirFile = new File(dataDirLoc + File.separator + subDir);
+        File subDirFile = new File(baseDir + File.separator + subDir);
         subDirList.add(subDirFile);
 
         // check if the amount of subdirectories (objectnumbers) is the same as in concordance table:
         File[] subdirsCheck = subDirFile.listFiles();
+
+        if(subdirsCheck == null){
+            writeErrorLog("Error while trying to list subdirectories of " + subDirFile);
+            exit();
+
+        }
 
         if (subdirsCheck.length != objectList.size()) {
 
@@ -641,10 +644,9 @@ public class ConcordanceValidator {
 
         // check if all files in the data folders exist in the concordance file:
         for (String objectNr : objectList) {
-            File files = new File(dataDirLoc + File.separator + subDir + File.separator + objectNr);
+            File files = new File(baseDir + File.separator + subDir + File.separator + objectNr);
 
             String[] filesInDir = files.list();
-
             for (String fileFromDir : filesInDir) {
                 fileExists = false;
                 lineNr = 2; // line 1 contains column names

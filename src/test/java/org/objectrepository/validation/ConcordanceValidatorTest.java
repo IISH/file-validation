@@ -42,7 +42,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.createPidColumn();
 
-        File file = new File(dataDirLoc + File.separator + "concordanceFileTemp.csv");
+        File file = new File(dataDirLoc + File.separator + prefix + File.separator + "concordanceFileTemp.csv");
         BufferedReader input = null;
         String inputLine = "";
         try {
@@ -218,7 +218,7 @@ public class ConcordanceValidatorTest {
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.isUnitTesting = true;
 
-        File file = new File(dataDirLoc + "JPEG-7" + File.separator + "000001" + File.separator + "MMIISG01_AF_000001.dat");
+        File file = new File(dataDirLoc + "MMIISG01\\JPEG-7" + File.separator + "000001" + File.separator + "MMIISG01_AF_000001.dat");
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
 
@@ -229,7 +229,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test11" + File.separator;
         prefix = "MMIISG01";
 
-        file = new File(dataDirLoc + "JPEG-10" + File.separator + "000001" + File.separator + "MMIISG01_AF2_000001.jpg");
+        file = new File(dataDirLoc + "MMIISG01\\JPEG-10" + File.separator + "000001" + File.separator + "MMIISG01_AF2_000001.jpg");
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.isUnitTesting = true;
@@ -242,7 +242,7 @@ public class ConcordanceValidatorTest {
         dataDirLoc = testdataLocation + "dorarussel_test12" + File.separator;
         prefix = "MMIISG01";
 
-        file = new File(dataDirLoc + "JPEG-10" + File.separator + "000001" + File.separator + "MMIISG01_AF2_000001.tif");
+        file = new File(dataDirLoc + "MMIISG01\\JPEG-10" + File.separator + "000001" + File.separator + "MMIISG01_AF2_000001.tif");
 
         concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.isUnitTesting = true;
@@ -278,7 +278,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
 
         try {
-            concordanceValidator.testFileExistenceAndTestHeaders(concordanceValidator.jpegColumnNr);
+            concordanceValidator.testFileExistenceAndTestHeaders(11);
         } catch (IOException e) {
             e.printStackTrace();
         }

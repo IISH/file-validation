@@ -17,12 +17,6 @@ public class ConcordanceMain {
 
     public ConcordanceMain(String dataDirLoc, String prefix, String pidPrefix) {
 
-        // create array of strings of all tiff images in the selected directory:
-
-        String concordanceFileLocation = dataDirLoc + File.separator + prefix + ".csv";
-        File concordanceFile = new File(concordanceFileLocation);
-
-
         ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.start();
 
