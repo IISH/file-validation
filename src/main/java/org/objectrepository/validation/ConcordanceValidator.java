@@ -599,7 +599,7 @@ public class ConcordanceValidator {
             objectList.add(objectNr);
 
             File file = new File(baseDir + File.separator + fileWithSubdir);
-            System.out.println("baseDir: " + baseDir + ", fileWithSubdir: " + fileWithSubdir );
+            writeErrorLog("baseDir: " + baseDir + ", fileWithSubdir: " + fileWithSubdir );
             if (!file.exists()) {
 
                 writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
