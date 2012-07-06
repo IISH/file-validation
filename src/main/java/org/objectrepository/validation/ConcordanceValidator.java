@@ -1,7 +1,6 @@
 package org.objectrepository.validation;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -89,7 +88,7 @@ public class ConcordanceValidator {
 
         try {
             reportOutput = new BufferedWriter(new FileWriter(reportFile));
-            if(reportOutput == null){
+            if (reportOutput == null) {
 
                 System.err.println("Could not create log output file: " + reportFile);
                 exit();
@@ -168,11 +167,8 @@ public class ConcordanceValidator {
             output.write(outputLine + "\r\n");
 
             while ((inputLine = input.readLine()) != null) {
-                String iisgPid = pidPrefix + "/";
-                UUID id = UUID.randomUUID();
 
-                String pid = iisgPid + id;
-
+                final String pid = pidPrefix + "/" + UUID.randomUUID().toString().toUpperCase();
                 if (inputLine.charAt(inputLine.length() - 1) == CSV_SEPARATOR.charAt(0)) {
                     outputLine = inputLine + pid;
                 } else {
@@ -586,13 +582,12 @@ public class ConcordanceValidator {
             String fileWithSubdir = columns[columnNumber];
 
 
-
             String[] fileWithSubdirArray = fileWithSubdir.split("/");
 
 
-            if(lineNr == 2){
+            if (lineNr == 2) {
                 subDir = "";
-                for(int i = 1 ; i < (fileWithSubdirArray.length - 2) ; i++){
+                for (int i = 1; i < (fileWithSubdirArray.length - 2); i++) {
                     subDir += fileWithSubdirArray[i] + File.separator;
                 }
                 writeErrorLog("subDir: " + subDir);
@@ -641,7 +636,7 @@ public class ConcordanceValidator {
         // check if the amount of subdirectories (objectnumbers) is the same as in concordance table:
         File[] subdirsCheck = subDirFile.listFiles();
 
-        if(subdirsCheck == null){
+        if (subdirsCheck == null) {
             writeErrorLog("Error while trying to list subdirectories of " + subDirFile);
             exit();
 
@@ -649,7 +644,7 @@ public class ConcordanceValidator {
 
         if (subdirsCheck.length != objectList.size()) {
 
-            writeErrorLog("Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")" );
+            writeErrorLog("Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")");
             writeErrorLog("baseDir: " + baseDir + ", subDir: " + subDir);
             exit();
 
@@ -680,7 +675,7 @@ public class ConcordanceValidator {
                         exit();
                     }
 
-                    if (fileFromDirPath.equals(fileFromConcordance)){
+                    if (fileFromDirPath.equals(fileFromConcordance)) {
 //                        System.out.println(fileFromDirPath + " == " + fileFromConcordance);
 
                         fileExists = true;
