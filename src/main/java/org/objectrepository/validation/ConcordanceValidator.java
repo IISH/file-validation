@@ -105,17 +105,17 @@ public class ConcordanceValidator {
 
             if (jpegPresent) {
                 testFileExistenceAndTestHeaders(jpegColumnNr);
-                testSubdirectories();
+//                testSubdirectories();
             }
 
             if (jpeg2Present) {
                 testFileExistenceAndTestHeaders(jpeg2ColumnNr);
-                testSubdirectories();
+//                testSubdirectories();
             }
 
             if (ocrPresent) {
                 testFileExistenceAndTestHeaders(ocrColumnNr);
-                testSubdirectories();
+//                testSubdirectories();
             }
 
 
@@ -257,7 +257,7 @@ public class ConcordanceValidator {
                     String prefixOfFile = object.split("_")[0];
                     if (!prefixOfFile.equals(prefix)) {
 
-                        writeErrorLog("Error: file " + object + " has incorrect prefix. Expected \"" + prefix + "\". Encountered: \"" + prefixOfFile + "\"");
+                        writeErrorLog("Error : file " + object + " has incorrect prefix. Expected \"" + prefix + "\". Encountered: \"" + prefixOfFile + "\"");
                         exit();
 
                     }
@@ -502,13 +502,13 @@ public class ConcordanceValidator {
 
     private void writeErrorLog(String logString) {
 
-        System.err.println(logString + "\r\n");
+        System.err.println(logString);
 
     }
 
     private void writeLog(String logString) {
 
-        System.out.println(logString + "\r\n");
+        System.out.println(logString);
 
     }
 
