@@ -603,7 +603,12 @@ public class ConcordanceValidator {
         subDirList.add(subDirFile);
 
         // check if the amount of subdirectories (objectnumbers) is the same as in concordance table:
-        File[] subdirsCheck = subDirFile.listFiles();
+        String[] subdirsCheck = subDirFile.list(new FilenameFilter() {
+
+            public boolean accept(File dir, String name) {
+                return dir.isDirectory();
+            }
+        });
 
         if (subdirsCheck == null) {
             writeErrorLog("Error while trying to list subdirectories of " + subDirFile);
