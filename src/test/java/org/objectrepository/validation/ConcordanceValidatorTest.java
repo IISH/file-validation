@@ -42,7 +42,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.createPidColumn();
 
-        File file = new File(dataDirLoc + File.separator + prefix + File.separator + "concordanceFileTemp.csv");
+        File file = new File(dataDirLoc + File.separator + prefix + File.separator + "concordanceValidWithPID.csv");
         BufferedReader input = null;
         String inputLine = "";
         try {

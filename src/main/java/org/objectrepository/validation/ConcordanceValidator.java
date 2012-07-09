@@ -15,8 +15,8 @@ public class ConcordanceValidator {
 
     // optional columns:
     private static final String PID_COLUMN_NAME = "PID";
-    private static final String JPEG_COLUMN_NAME = "JPEG-7";
-    private static final String JPEG2_COLUMN_NAME = "JPEG-10";
+    private static final String JPEG_COLUMN_NAME = "jpeg";
+    private static final String JPEG2_COLUMN_NAME = "jpeg2";
     private static final String OCR_COLUMN_NAME = "OCR";
 
     private static final String CSV_SEPARATOR = ",";
@@ -63,7 +63,6 @@ public class ConcordanceValidator {
     private String prefix;
     private String pidPrefix;
     private String baseDir;
-    private BufferedWriter reportOutput;
 
     File concordanceFile;
 
@@ -86,18 +85,6 @@ public class ConcordanceValidator {
         // setup the file to log all output:
         File reportFile = new File(dataDirLoc + File.separator + REPORT_FILE);
 
-        try {
-            reportOutput = new BufferedWriter(new FileWriter(reportFile));
-            if (reportOutput == null) {
-
-                System.err.println("Could not create log output file: " + reportFile);
-                exit();
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
     }
 
@@ -105,7 +92,6 @@ public class ConcordanceValidator {
 
         parseColumns();
 
-        if (!pidColumnPresent) createPidColumn();
 
         try {
 
@@ -132,7 +118,8 @@ public class ConcordanceValidator {
                 testSubdirectories();
             }
 
-            reportOutput.close();
+
+            if (!pidColumnPresent) createPidColumn();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,7 +135,8 @@ public class ConcordanceValidator {
     * */
     public void createPidColumn() {
 
-        File tempConcordanceFile = new File(dataDirLoc + File.separator + "concordanceFileTemp.csv");
+        File tempConcordanceFile = new File(dataDirLoc + File.separator + "concordanceValidWithPID.csv");
+
         try {
             BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
             BufferedWriter output = new BufferedWriter(new FileWriter(tempConcordanceFile));
@@ -181,16 +169,6 @@ public class ConcordanceValidator {
             output.flush();
             input.close();
             output.close();
-
-            boolean success;
-            File f = new File(dataDirLoc + File.separator + "temp.csv");
-
-            if (f.exists()) {
-                success = f.delete();
-                if (!success) {
-                    writeErrorLog("Error: could not delete temporary file " + f);
-                }
-            }
 
             concordanceFile = tempConcordanceFile;
 
@@ -525,22 +503,14 @@ public class ConcordanceValidator {
     private void writeErrorLog(String logString) {
         System.err.println(logString);
 
-        try {
-            reportOutput.write(logString + "\r\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.err.println(logString + "\r\n");
 
     }
 
     private void writeLog(String logString) {
         System.out.println(logString);
 
-        try {
-            reportOutput.write(logString + "\r\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(logString + "\r\n");
 
     }
 
@@ -680,6 +650,8 @@ public class ConcordanceValidator {
 
                         fileExists = true;
                     }
+
+                    lineNr++;
 
                 }
 
