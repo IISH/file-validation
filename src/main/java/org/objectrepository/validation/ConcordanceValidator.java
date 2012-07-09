@@ -209,6 +209,7 @@ public class ConcordanceValidator {
                     pidColumnNr = i;
                     pidColumnPresent = true;
                 } else if (columnNames[i].equals(JPEG_COLUMN_NAME)) {
+                    writeLog("Found JPEG1 at column " + i);
                     jpegColumnNr = i;
                     jpegPresent = true;
                 } else if (columnNames[i].equals(JPEG2_COLUMN_NAME)) {
@@ -501,14 +502,12 @@ public class ConcordanceValidator {
 
 
     private void writeErrorLog(String logString) {
-        System.err.println(logString);
 
         System.err.println(logString + "\r\n");
 
     }
 
     private void writeLog(String logString) {
-        System.out.println(logString);
 
         System.out.println(logString + "\r\n");
 
