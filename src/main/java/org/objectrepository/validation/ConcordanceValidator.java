@@ -101,7 +101,7 @@ public class ConcordanceValidator {
 
             testFileExistenceAndTestHeaders(masterColumnNr);
 
-            testSubdirectories();
+//            testSubdirectories();
 
             if (jpegPresent) {
                 testFileExistenceAndTestHeaders(jpegColumnNr);
@@ -209,7 +209,6 @@ public class ConcordanceValidator {
                     pidColumnNr = i;
                     pidColumnPresent = true;
                 } else if (columnNames[i].equals(JPEG_COLUMN_NAME)) {
-                    writeLog("Found JPEG1 at column " + i);
                     jpegColumnNr = i;
                     jpegPresent = true;
                 } else if (columnNames[i].equals(JPEG2_COLUMN_NAME)) {
