@@ -121,6 +121,9 @@ public class ConcordanceValidator {
 
             if (!pidColumnPresent) createPidColumn();
 
+            writeLog("----  All tests passed.  ----");
+            writeLog("");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -176,6 +179,8 @@ public class ConcordanceValidator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        writeLog("Creation of PID column containing UUIDs succeeded.");
 
     }
 
@@ -236,6 +241,8 @@ public class ConcordanceValidator {
             exit();
 
         }
+
+        writeLog("Parsing columns complete. No errors detected.");
 
 
     }
@@ -367,6 +374,8 @@ public class ConcordanceValidator {
         }
 
 
+        writeLog("Relationship test between columns test passed. All image files denoted in the table correspond to each other.");
+
     }
 
     // checks if the volgnummers and objectnummers are in correct order.
@@ -497,6 +506,7 @@ public class ConcordanceValidator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 
