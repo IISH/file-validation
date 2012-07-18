@@ -19,7 +19,7 @@ public class ConcordanceValidatorTest {
 
     @BeforeClass
     public static void setUp() throws ClassNotFoundException {
-    //
+        //
 
     }
 
@@ -102,7 +102,6 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
 
 
-
         assertTrue(ConcordanceValidator.exitCalled);
 
     }
@@ -150,12 +149,11 @@ public class ConcordanceValidatorTest {
 
     }
 
-
-    // Dir 6 7 8
     @Test
-    public void testVolgnummersTest() {
+    public void testVolgnummersTest1() {
+        resources();
 
-        // volgnummer not a number:
+        System.out.println("volgnummer not a number:");
         dataDirLoc = testdataLocation + "dorarussel_test6" + File.separator;
         prefix = "MMIISG01";
 
@@ -165,45 +163,77 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
-        // objectnummer not a number:
+    }
+
+    @Test
+    public void testVolgnummersTest2() {
+        resources();
+
+        System.out.println("objectnummer not a number:");// objectnummer not a number:
         dataDirLoc = testdataLocation + "dorarussel_test7" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.isUnitTesting = true;
 
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
+    }
 
-        // volgnummer incorrect
+    @Test
+    public void testVolgnummersTest3() {
+        resources();
+        System.out.println("volgnummer incorrect:");// volgnummer incorrect
         dataDirLoc = testdataLocation + "dorarussel_test8" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.isUnitTesting = true;
 
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
+    }
 
-        // object nummer incorrect
+    @Test
+    public void testVolgnummersTest4() {
+        resources();
+        System.out.println("object nummer incorrect:");// object nummer incorrect
         dataDirLoc = testdataLocation + "dorarussel_test9" + File.separator;
         prefix = "MMIISG01";
 
-        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
         concordanceValidator.isUnitTesting = true;
 
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
+    }
 
+
+    @Test
+    public void testVolgnummersTest5() {
+        resources();
+
+
+        System.out.println("object nummer and volgnummer incorrect, rows interchanged:");// object nummer and volgnummer incorrect, rows interchanged:
+        dataDirLoc = testdataLocation + "dorarussel_test18" + File.separator;
+        prefix = "MMIISG01";
+
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
+        concordanceValidator.isUnitTesting = true;
+
+        concordanceValidator.parseColumns();
+        concordanceValidator.testVolgnummers();
+
+        assertTrue(ConcordanceValidator.warning);
 
     }
 
@@ -222,7 +252,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
 
         // filesize incorrect:
@@ -236,7 +266,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
         // incorrect image header:
         dataDirLoc = testdataLocation + "dorarussel_test12" + File.separator;
@@ -249,7 +279,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
     }
 
@@ -265,7 +295,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.start();
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
 
         // File in concordance table does not exist on disk:
@@ -283,7 +313,7 @@ public class ConcordanceValidatorTest {
             e.printStackTrace();
         }
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
 
         // different amount of directories than amount of objects in concordance file:
@@ -301,7 +331,7 @@ public class ConcordanceValidatorTest {
             e.printStackTrace();
         }
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
         // duplicate entry in concordance table:
         dataDirLoc = testdataLocation + "dorarussel_test16" + File.separator;
@@ -312,7 +342,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.start();
 
-        assertTrue(ConcordanceValidator.exitCalled);
+        assertTrue(ConcordanceValidator.warning);
 
         // file on disk not in concordance table:
         dataDirLoc = testdataLocation + "dorarussel_test17" + File.separator;
@@ -324,23 +354,9 @@ public class ConcordanceValidatorTest {
         concordanceValidator.start();
 
 
-        assertTrue(ConcordanceValidator.exitCalled);
-
+        assertTrue(ConcordanceValidator.warning);
 
 
     }
-
-//    @Test
-//    public void pathnameTest(){
-//        dataDirLoc = testdataLocation + "dorarussel_test18" + File.separator;
-//        prefix = "MMIISG01";
-//
-//        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
-//        concordanceValidator.isUnitTesting = true;
-//
-//        concordanceValidator.start();
-//
-//
-//    }
 
 }
