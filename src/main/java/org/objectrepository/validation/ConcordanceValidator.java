@@ -654,15 +654,15 @@ public class ConcordanceValidator {
         writeLog("Checking if file in concordance table exists in directory..");
         while ((line = input.readLine()) != null) {
 
-
-            progress = (Double.valueOf(lineNr) / countedLines) * 100.0;
-            progress = Math.round(progress / 10) * 10;
-            if (progress % 10 == 0) {
+            if (lineNr % 50 == 0) {
+                progress = (Double.valueOf(lineNr) / countedLines) * 100.0;
+                progress = Math.round(progress / 10) * 10;
                 while (length-- > 0) {
                     System.out.print('\b');
                 }
                 System.out.print(progress + "%");
                 length = String.valueOf(progress).length() + 1;
+
             }
 
             String[] columns = line.split(CSV_SEPARATOR);
@@ -748,8 +748,8 @@ public class ConcordanceValidator {
                 while (length-- > 0) {
                     System.out.print('\b');
                 }
-                System.out.print(progress + "%" + ", object " + objectNr );
-                length = String.valueOf(progress).length() + String.valueOf(objectNr).length() + 10;
+                System.out.print(progress + "%");
+                length = String.valueOf(progress).length() + 1;
             }
 
             File files = new File(baseDir + File.separator + subDir + File.separator + objectNr);
