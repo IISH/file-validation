@@ -580,10 +580,6 @@ public class ConcordanceValidator {
             e.printStackTrace();
         }
 
-        if(!headerOrFilesizeError){
-            writeLog("Header and filesize test passed.");
-        }
-
     }
 
 
