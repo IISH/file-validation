@@ -387,7 +387,7 @@ public class ConcordanceValidator {
         int lineNr = 2;
         int expectedVolgNr = 1;
         int expectedObjNr = 1;
-        ArrayList<ObjectNumber2> numberList = new ArrayList<ObjectNumber2>();
+        ArrayList<ObjectNumber> numberList = new ArrayList<ObjectNumber>();
 
 
         try {
@@ -419,12 +419,12 @@ public class ConcordanceValidator {
                     volgnummerError = true;
                 }
 
-                ObjectNumber2 combinedNumber = new ObjectNumber2(objNrParsed, volgNrParsed, lineNr);
+                ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, volgNrParsed, lineNr);
                 numberList.add(combinedNumber);
 
             }
 
-            for (ObjectNumber2 combinedNumber : numberList) {
+            for (ObjectNumber combinedNumber : numberList) {
 
                 if (combinedNumber.getObjectNumber() != expectedObjNr) {
                     expectedObjNr++;
@@ -478,13 +478,13 @@ public class ConcordanceValidator {
     }
 
 
-    private boolean sortedVolgnummerCorrect(ArrayList<ObjectNumber2> numberList) {
+    private boolean sortedVolgnummerCorrect(ArrayList<ObjectNumber> numberList) {
         int expectedObjNr = 1;
         int expectedVolgNr = 1;
 
         Collections.sort(numberList, new
-                Comparator<ObjectNumber2>() {
-                    public int compare(ObjectNumber2 lhs, ObjectNumber2 rhs) {
+                Comparator<ObjectNumber>() {
+                    public int compare(ObjectNumber lhs, ObjectNumber rhs) {
 
                         if (lhs.getObjectNumber() > rhs.getObjectNumber()) return 1;
                         else if (lhs.getObjectNumber() < rhs.getObjectNumber()) return -1;
@@ -498,7 +498,7 @@ public class ConcordanceValidator {
 
                 });
 
-        for (ObjectNumber2 combinedNumber : numberList) {
+        for (ObjectNumber combinedNumber : numberList) {
             if (combinedNumber.getObjectNumber() != expectedObjNr) {
                 expectedObjNr++;
                 if (combinedNumber.getObjectNumber() == expectedObjNr) {
