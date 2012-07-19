@@ -1,5 +1,7 @@
 package org.objectrepository.validation;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
+
 import java.io.*;
 import java.util.*;
 
@@ -611,14 +613,32 @@ public class ConcordanceValidator {
         }
     }
 
+
+    public int countLines(File concordanceFile) throws IOException {
+        BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
+        String line = "";
+        int nrOfLines = 0;
+
+        while ((line = input.readLine()) != null) {
+            nrOfLines++;
+        }
+
+        return nrOfLines;
+
+    }
+
+
     public void testFileExistenceAndTestHeaders(int columnNumber) throws IOException {
         BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
         String line;
         String subDir = "";
+        String errorString = "";
         boolean fileExists;
 
         // line 1 contains column names so start with line 2:
         int lineNr = 2;
+        double progress = 0;
+        int length = 0;
 
         ArrayList<String> concordanceFileList = new ArrayList<String>();
         ArrayList<String> objectList = new ArrayList<String>();
@@ -626,8 +646,23 @@ public class ConcordanceValidator {
         // skip the first line containing the column names:
         input.readLine();
 
+        writeLog("Counting number of lines in concordance file...");
+        int countedLines = countLines(concordanceFile);
+        writeLog("Number of lines in concordance file: " + countedLines);
+
         // check if file in concordance table exists in directory:
+        writeLog("Checking if file in concordance table exists in directory..");
         while ((line = input.readLine()) != null) {
+
+            while (length-- > 0) {
+                System.out.print('\b');
+            }
+            progress = (Double.valueOf(lineNr) / countedLines) * 100.0;
+            progress = Math.round(progress / 10) * 10;
+            if (progress % 10 == 0) {
+                System.out.print(progress + "%");
+                length = String.valueOf(progress).length() + 1;
+            }
 
             String[] columns = line.split(CSV_SEPARATOR);
             String fileWithSubdir = columns[columnNumber];
@@ -650,8 +685,8 @@ public class ConcordanceValidator {
             File file = new File(baseDir + File.separator + fileWithSubdir);
             if (!file.exists()) {
 
-                writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
-                writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
+                errorString += ERROR_FILE_EXISTENCE + ": " + file + "\n";
+                errorString += "Concordance file " + file + ", line " + lineNr + " column " + columnNumber + "\n";
                 fileOrHeaderError = true;
 
             } else {
@@ -663,6 +698,8 @@ public class ConcordanceValidator {
             lineNr++;
 
         }
+
+        writeLog("");
 
 
         // remove duplicates from object list:
@@ -683,22 +720,36 @@ public class ConcordanceValidator {
         });
 
         if (subdirsCheck == null) {
-            writeErrorLog("Error during header and filesize test: Trying to list subdirectories of " + subDirFile);
+            writeErrorLog("\nError during header and filesize test: Trying to list subdirectories of " + subDirFile);
             exit();
 
         }
 
         if (subdirsCheck.length != objectList.size()) {
 
-            writeErrorLog("Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")");
-            writeErrorLog("baseDir: " + baseDir + ", subDir: " + subDir);
+            errorString += "Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")\n";
+            errorString += "baseDir: " + baseDir + ", subDir: " + subDir + "\n";
             fileOrHeaderError = true;
 
         }
 
 
+        int nrOfObjects = 0;
+        length = 0;
         // check if all files in the data folders exist in the concordance file:
+        writeLog("Checking if all files in the data folders exist in the concordance file..");
         for (String objectNr : objectList) {
+
+            while (length-- > 0) {
+                System.out.print('\b');
+            }
+            progress = (Double.valueOf(nrOfObjects) / objectList.size()) * 100.0;
+            progress = Math.round(progress / 10) * 10;
+            if (progress % 10 == 0) {
+                System.out.print(progress + "%");
+                length = String.valueOf(progress).length() + 1;
+            }
+
             File files = new File(baseDir + File.separator + subDir + File.separator + objectNr);
 
             String[] filesInDir = files.list();
@@ -716,8 +767,8 @@ public class ConcordanceValidator {
 
                     // check for duplicates:
                     if (fileExists && fileFromDirPath.equals(fileFromConcordance)) {
-                        writeErrorLog(ERROR_CONCORDANCE_FILE_DUPLICATE);
-                        writeErrorLog("Line number: " + lineNr + ", entry: " + fileFromConcordance);
+                        errorString += ERROR_CONCORDANCE_FILE_DUPLICATE + "\n";
+                        errorString += "Line number: " + lineNr + ", entry: " + fileFromConcordance + "\n";
                         fileOrHeaderError = true;
                     }
 
@@ -730,12 +781,14 @@ public class ConcordanceValidator {
                 }
 
                 if (!fileExists) {
-                    writeErrorLog(ERROR_CONCORDANCE_FILE_MISSING);
-                    writeErrorLog("File: " + files + File.separator + fileFromDir);
+                    errorString += ERROR_CONCORDANCE_FILE_MISSING + "\n";
+                    errorString += "File: " + files + File.separator + fileFromDir + "\n";
                     fileOrHeaderError = true;
                 }
 
             }
+
+            nrOfObjects++;
 
         }
 
@@ -745,6 +798,9 @@ public class ConcordanceValidator {
 
             writeLog("Header test passed. All files of type " + subDir + " denoted in the concordance table have the right headers.");
             writeLog("File size test passed. All files of type " + subDir + " denoted in the concordance table have a size bigger than " + MINIMAL_FILE_SIZE + " bytes.");
+        } else {
+            writeErrorLog(errorString);
+
         }
     }
 
