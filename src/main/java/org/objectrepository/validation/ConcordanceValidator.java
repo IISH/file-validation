@@ -52,6 +52,12 @@ public class ConcordanceValidator {
     // for testing purposes:
     public static boolean exitCalled;
     public static boolean warning;
+    public static boolean relationshipError;
+    public static boolean fileOrHeaderError;
+    public static boolean volgnummerError;
+    public static boolean headerOrFilesizeError;
+
+
     boolean isUnitTesting = false;
 
     ArrayList<File> subDirList = new ArrayList<File>();
@@ -302,7 +308,7 @@ public class ConcordanceValidator {
 
                 if (tifImageArray.length < 2) {
                     writeErrorLog("Incorrect path name for master image at line " + lineNr + ", column " + masterColumnNr);
-                    warning = true;
+                    relationshipError = true;
                 }
 
                 tifImage = tifImageArray[tifImageArray.length - 1];
@@ -311,7 +317,7 @@ public class ConcordanceValidator {
 
                 if (jpegImageArray.length < 2) {
                     writeErrorLog("Incorrect path name for jpeg image at line " + lineNr + ", column " + jpegColumnNr);
-                    warning = true;
+                    relationshipError = true;
                 }
 
                 jpegImage = jpegImageArray[jpegImageArray.length - 1];
@@ -319,7 +325,7 @@ public class ConcordanceValidator {
 
                 if (!tifImage.equals(jpegImage)) {
                     writeErrorLog("Warning: Difference in filenames between " + tifImage + " and " + jpegImage + " at line " + lineNr);
-                    warning = true;
+                    relationshipError = true;
                 }
 
                 if (jpeg2Present) {
@@ -329,14 +335,14 @@ public class ConcordanceValidator {
 
                     if (jpegImageArray.length < 2) {
                         writeErrorLog("Incorrect path name for jpeg2 image at line " + lineNr + ", column " + jpeg2ColumnNr);
-                        warning = true;
+                        relationshipError = true;
                     }
 
                     jpeg2Image = jpeg2ImageArray[jpeg2ImageArray.length - 1];
 
                     if (!jpeg2Image.equals(jpegImage)) {
                         writeErrorLog("Warning: Difference in filenames between " + jpeg2Image + " and " + jpegImage + " at line " + lineNr);
-                        warning = true;
+                        relationshipError = true;
                     }
                 }
 
@@ -347,14 +353,14 @@ public class ConcordanceValidator {
 
                     if (ocrArray.length < 2) {
                         writeErrorLog("Incorrect path name at line " + lineNr + ", column " + ocrColumnNr);
-                        warning = true;
+                        relationshipError = true;
                     }
 
                     ocr = ocrArray[ocrArray.length - 1];
 
                     if (!ocr.equals(jpegImage)) {
                         writeErrorLog("Warning: Difference in filenames between " + ocr + " and " + jpegImage + " at line " + lineNr);
-                        warning = true;
+                        relationshipError = true;
                     }
                 }
 
@@ -368,9 +374,9 @@ public class ConcordanceValidator {
             e.printStackTrace();
         }
 
-
-        writeLog("Relationship test between columns test passed. All image files denoted in the table correspond to each other.");
-
+        if (!relationshipError) {
+            writeLog("Relationship test between columns test passed. All image files denoted in the table correspond to each other.");
+        }
     }
 
     // checks if the volgnummers and objectnummers are in correct order.
@@ -381,7 +387,7 @@ public class ConcordanceValidator {
         int lineNr = 2;
         int expectedVolgNr = 1;
         int expectedObjNr = 1;
-        ArrayList<ObjectNumber> numberList = new ArrayList<ObjectNumber>();
+        ArrayList<objectNumber> numberList = new ArrayList<objectNumber>();
 
 
         try {
@@ -403,22 +409,22 @@ public class ConcordanceValidator {
                     volgNrParsed = Integer.parseInt(volgNr);
                 } catch (NumberFormatException e) {
                     writeErrorLog("Error: incorrect entry in volgnummer column at line " + lineNr);
-                    warning = true;
+                    volgnummerError = true;
                 }
                 // try parsing the objectnummer, throw error if not a number:
                 try {
                     objNrParsed = Integer.parseInt(objNr);
                 } catch (NumberFormatException e) {
                     writeErrorLog("Error: incorrect entry in object nummer column at line " + lineNr);
-                    warning = true;
+                    volgnummerError = true;
                 }
 
-                ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, volgNrParsed, lineNr);
+                objectNumber combinedNumber = new objectNumber(objNrParsed, volgNrParsed, lineNr);
                 numberList.add(combinedNumber);
 
             }
 
-            for (ObjectNumber combinedNumber : numberList) {
+            for (objectNumber combinedNumber : numberList) {
 
                 if (combinedNumber.getObjectNumber() != expectedObjNr) {
                     expectedObjNr++;
@@ -429,13 +435,13 @@ public class ConcordanceValidator {
                         if (!sortedVolgnummerCorrect(numberList)) {
 
                             writeErrorLog("Error: objectnummer incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
-                            warning = true;
+                            volgnummerError = true;
 
                         } else {
 
                             writeErrorLog("Warning: objectnummber incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
                             writeErrorLog("After sorting no errors were found.");
-                            warning = true;
+                            volgnummerError = true;
 
                         }
                     }
@@ -446,13 +452,13 @@ public class ConcordanceValidator {
                     if (!sortedVolgnummerCorrect(numberList)) {
 
                         writeErrorLog("Error: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
-                        warning = true;
+                        volgnummerError = true;
 
                     } else {
 
                         writeErrorLog("Warning: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
                         writeErrorLog("After sorting no errors were found. This means two (or more) lines in the table are interchanged.");
-                        warning = true;
+                        volgnummerError = true;
 
                     }
                 }
@@ -466,18 +472,19 @@ public class ConcordanceValidator {
             e.printStackTrace();
         }
 
-        writeLog("Volgnummer test passed.");
-
+        if (!volgnummerError) {
+            writeLog("Volgnummer test passed.");
+        }
     }
 
 
-    private boolean sortedVolgnummerCorrect(ArrayList<ObjectNumber> numberList) {
+    private boolean sortedVolgnummerCorrect(ArrayList<objectNumber> numberList) {
         int expectedObjNr = 1;
         int expectedVolgNr = 1;
 
         Collections.sort(numberList, new
-                Comparator<ObjectNumber>() {
-                    public int compare(ObjectNumber lhs, ObjectNumber rhs) {
+                Comparator<objectNumber>() {
+                    public int compare(objectNumber lhs, objectNumber rhs) {
 
                         if (lhs.getObjectNumber() > rhs.getObjectNumber()) return 1;
                         else if (lhs.getObjectNumber() < rhs.getObjectNumber()) return -1;
@@ -491,7 +498,7 @@ public class ConcordanceValidator {
 
                 });
 
-        for (ObjectNumber combinedNumber : numberList) {
+        for (objectNumber combinedNumber : numberList) {
             if (combinedNumber.getObjectNumber() != expectedObjNr) {
                 expectedObjNr++;
                 if (combinedNumber.getObjectNumber() == expectedObjNr) {
@@ -536,7 +543,7 @@ public class ConcordanceValidator {
             magicNumber = MAGIC_NUMBER_JPEG;
         } else {
             writeLog("Error: cannot check header of file " + inputFile + ". File does not have a recognizable extension: " + extension);
-            warning = true;
+            headerOrFilesizeError = true;
         }
 
 
@@ -548,12 +555,12 @@ public class ConcordanceValidator {
             if (inputFile.length() < MINIMAL_FILE_SIZE) {
 
                 writeErrorLog("Error: file " + inputFile + " has size smaller than limit of " + MINIMAL_FILE_SIZE + " bytes");
-                warning = true;
+                headerOrFilesizeError = true;
             }
 
             if (fis.read(b) < 4) {
                 writeErrorLog("Error reading first 4 bytes of file " + inputFile);
-                warning = true;
+                headerOrFilesizeError = true;
             }
 
             if (!Arrays.equals(b, magicNumber)) {
@@ -562,7 +569,7 @@ public class ConcordanceValidator {
                 if (extension.equals("tif") || extension.equals("tiff") &&
                         !Arrays.equals(b, MAGIC_NUMBER_TIFF_BIG_ENDIAN)) {
                     writeErrorLog("Error: The file " + inputFile + " has extension " + extension + " but does not have the correct header.");
-                    warning = true;
+                    headerOrFilesizeError = true;
                 }
             }
 
@@ -571,6 +578,10 @@ public class ConcordanceValidator {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        if(!headerOrFilesizeError){
+            writeLog("Header and filesize test passed.");
         }
 
     }
@@ -634,7 +645,6 @@ public class ConcordanceValidator {
                 for (int i = 1; i < (fileWithSubdirArray.length - 2); i++) {
                     subDir += fileWithSubdirArray[i] + File.separator;
                 }
-                writeErrorLog("subDir: " + subDir);
             }
 
             concordanceFileList.add(baseDir + File.separator + fileWithSubdir);
@@ -646,7 +656,7 @@ public class ConcordanceValidator {
 
                 writeErrorLog(ERROR_FILE_EXISTENCE + ": " + file);
                 writeErrorLog("Concordance file " + file + ", line " + lineNr + " column " + columnNumber);
-                warning = true;
+                fileOrHeaderError = true;
 
             } else {
 
@@ -677,7 +687,7 @@ public class ConcordanceValidator {
         });
 
         if (subdirsCheck == null) {
-            writeErrorLog("Error while trying to list subdirectories of " + subDirFile);
+            writeErrorLog("Error during header and filesize test: Trying to list subdirectories of " + subDirFile);
             exit();
 
         }
@@ -686,7 +696,7 @@ public class ConcordanceValidator {
 
             writeErrorLog("Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")");
             writeErrorLog("baseDir: " + baseDir + ", subDir: " + subDir);
-            warning = true;
+            fileOrHeaderError = true;
 
         }
 
@@ -712,7 +722,7 @@ public class ConcordanceValidator {
                     if (fileExists && fileFromDirPath.equals(fileFromConcordance)) {
                         writeErrorLog(ERROR_CONCORDANCE_FILE_DUPLICATE);
                         writeErrorLog("Line number: " + lineNr + ", entry: " + fileFromConcordance);
-                        warning = true;
+                        fileOrHeaderError = true;
                     }
 
                     if (fileFromDirPath.equals(fileFromConcordance)) {
@@ -726,18 +736,20 @@ public class ConcordanceValidator {
                 if (!fileExists) {
                     writeErrorLog(ERROR_CONCORDANCE_FILE_MISSING);
                     writeErrorLog("File: " + files + File.separator + fileFromDir);
-                    warning = true;
+                    fileOrHeaderError = true;
                 }
 
             }
 
         }
-        writeLog("Concordance table " + subDir + " <-> Directory " + subDir + " test passed. All " + subDir + " files in concordance" +
-                "table are present in " + subDir + " directory, and all " + subDir + " files in " + subDir + " directory are present in concordance table.");
 
-        writeLog("Header test passed. All files of type " + subDir + " denoted in the concordance table have the right headers.");
-        writeLog("File size test passed. All files of type " + subDir + " denoted in the concordance table have a size bigger than " + MINIMAL_FILE_SIZE + " bytes.");
+        if (!fileOrHeaderError) {
+            writeLog("Concordance table " + subDir + " <-> Directory " + subDir + " test passed. All " + subDir + " files in concordance" +
+                    "table are present in " + subDir + " directory, and all " + subDir + " files in " + subDir + " directory are present in concordance table.");
 
+            writeLog("Header test passed. All files of type " + subDir + " denoted in the concordance table have the right headers.");
+            writeLog("File size test passed. All files of type " + subDir + " denoted in the concordance table have a size bigger than " + MINIMAL_FILE_SIZE + " bytes.");
+        }
     }
 
 

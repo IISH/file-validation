@@ -145,7 +145,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.testRelationShips();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.relationshipError);
 
     }
 
@@ -163,7 +163,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.volgnummerError);
 
     }
 
@@ -181,7 +181,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.volgnummerError);
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.volgnummerError);
 
     }
 
@@ -214,7 +214,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.volgnummerError);
     }
 
 
@@ -233,7 +233,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.parseColumns();
         concordanceValidator.testVolgnummers();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.volgnummerError);
 
     }
 
@@ -252,7 +252,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.headerOrFilesizeError);
 
 
         // filesize incorrect:
@@ -266,7 +266,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.headerOrFilesizeError);
 
         // incorrect image header:
         dataDirLoc = testdataLocation + "dorarussel_test12" + File.separator;
@@ -279,7 +279,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.testHeaderAndFilesize(file, 1);
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.headerOrFilesizeError);
 
     }
 
@@ -295,7 +295,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.start();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.fileOrHeaderError);
 
 
         // File in concordance table does not exist on disk:
@@ -313,7 +313,7 @@ public class ConcordanceValidatorTest {
             e.printStackTrace();
         }
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.fileOrHeaderError);
 
 
         // different amount of directories than amount of objects in concordance file:
@@ -331,7 +331,7 @@ public class ConcordanceValidatorTest {
             e.printStackTrace();
         }
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.fileOrHeaderError);
 
         // duplicate entry in concordance table:
         dataDirLoc = testdataLocation + "dorarussel_test16" + File.separator;
@@ -342,7 +342,7 @@ public class ConcordanceValidatorTest {
 
         concordanceValidator.start();
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.fileOrHeaderError);
 
         // file on disk not in concordance table:
         dataDirLoc = testdataLocation + "dorarussel_test17" + File.separator;
@@ -354,7 +354,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.start();
 
 
-        assertTrue(ConcordanceValidator.warning);
+        assertTrue(ConcordanceValidator.fileOrHeaderError);
 
 
     }
