@@ -654,12 +654,13 @@ public class ConcordanceValidator {
         writeLog("Checking if file in concordance table exists in directory..");
         while ((line = input.readLine()) != null) {
 
-            while (length-- > 0) {
-                System.out.print('\b');
-            }
+
             progress = (Double.valueOf(lineNr) / countedLines) * 100.0;
             progress = Math.round(progress / 10) * 10;
             if (progress % 10 == 0) {
+                while (length-- > 0) {
+                    System.out.print('\b');
+                }
                 System.out.print(progress + "%");
                 length = String.valueOf(progress).length() + 1;
             }
@@ -734,20 +735,21 @@ public class ConcordanceValidator {
         }
 
 
-        int nrOfObjects = 0;
+        int nrOfObjectsChecked = 0;
         length = 0;
         // check if all files in the data folders exist in the concordance file:
         writeLog("Checking if all files in the data folders exist in the concordance file..");
+
         for (String objectNr : objectList) {
 
-            while (length-- > 0) {
-                System.out.print('\b');
-            }
-            progress = (Double.valueOf(nrOfObjects) / objectList.size()) * 100.0;
+            progress = (Double.valueOf(nrOfObjectsChecked) / objectList.size()) * 100.0;
             progress = Math.round(progress / 10) * 10;
             if (progress % 10 == 0) {
-                System.out.print(progress + "%");
-                length = String.valueOf(progress).length() + 1;
+                while (length-- > 0) {
+                    System.out.print('\b');
+                }
+                System.out.print(progress + "%" + ", object " + objectNr );
+                length = String.valueOf(progress).length() + String.valueOf(objectNr).length() + 10;
             }
 
             File files = new File(baseDir + File.separator + subDir + File.separator + objectNr);
@@ -788,7 +790,7 @@ public class ConcordanceValidator {
 
             }
 
-            nrOfObjects++;
+            nrOfObjectsChecked++;
 
         }
 
