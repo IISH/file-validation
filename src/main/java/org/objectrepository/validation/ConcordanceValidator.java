@@ -387,7 +387,7 @@ public class ConcordanceValidator {
         int lineNr = 2;
         int expectedVolgNr = 1;
         int expectedObjNr = 1;
-        ArrayList<objectNumber> numberList = new ArrayList<objectNumber>();
+        ArrayList<ObjectNumber> numberList = new ArrayList<ObjectNumber>();
 
 
         try {
@@ -419,12 +419,12 @@ public class ConcordanceValidator {
                     volgnummerError = true;
                 }
 
-                objectNumber combinedNumber = new objectNumber(objNrParsed, volgNrParsed, lineNr);
+                ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, volgNrParsed, lineNr);
                 numberList.add(combinedNumber);
 
             }
 
-            for (objectNumber combinedNumber : numberList) {
+            for (ObjectNumber combinedNumber : numberList) {
 
                 if (combinedNumber.getObjectNumber() != expectedObjNr) {
                     expectedObjNr++;
@@ -478,13 +478,13 @@ public class ConcordanceValidator {
     }
 
 
-    private boolean sortedVolgnummerCorrect(ArrayList<objectNumber> numberList) {
+    private boolean sortedVolgnummerCorrect(ArrayList<ObjectNumber> numberList) {
         int expectedObjNr = 1;
         int expectedVolgNr = 1;
 
         Collections.sort(numberList, new
-                Comparator<objectNumber>() {
-                    public int compare(objectNumber lhs, objectNumber rhs) {
+                Comparator<ObjectNumber>() {
+                    public int compare(ObjectNumber lhs, ObjectNumber rhs) {
 
                         if (lhs.getObjectNumber() > rhs.getObjectNumber()) return 1;
                         else if (lhs.getObjectNumber() < rhs.getObjectNumber()) return -1;
@@ -498,7 +498,7 @@ public class ConcordanceValidator {
 
                 });
 
-        for (objectNumber combinedNumber : numberList) {
+        for (ObjectNumber combinedNumber : numberList) {
             if (combinedNumber.getObjectNumber() != expectedObjNr) {
                 expectedObjNr++;
                 if (combinedNumber.getObjectNumber() == expectedObjNr) {
