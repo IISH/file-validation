@@ -357,6 +357,19 @@ public class ConcordanceValidatorTest {
         assertTrue(ConcordanceValidator.fileOrHeaderError);
 
 
+        // Null pointer error while listing files, last loop in testFileExistenceAndTestHeaders() :
+        dataDirLoc = testdataLocation + "dorarussel_test19" + File.separator;
+        prefix = "MMIISG01";
+
+        concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
+        concordanceValidator.isUnitTesting = true;
+
+        concordanceValidator.start();
+
+
+        assertTrue(ConcordanceValidator.fileOrHeaderError);
+
+
     }
 
 }

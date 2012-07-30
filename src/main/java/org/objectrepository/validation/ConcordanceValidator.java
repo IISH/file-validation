@@ -445,8 +445,8 @@ public class ConcordanceValidator {
 
                         } else {
 
-                            writeErrorLog("Warning: objectnummber incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
-                            writeErrorLog("After sorting no errors were found.");
+                            writeErrorLog("Warning: objectnummer incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
+                            writeErrorLog("After sorting no errors were found. This probably means two or more lines in the table have been switched");
                             volgnummerError = true;
 
                         }
@@ -463,7 +463,7 @@ public class ConcordanceValidator {
                     } else {
 
                         writeErrorLog("Warning: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
-                        writeErrorLog("After sorting no errors were found. This means two (or more) lines in the table are interchanged.");
+                        writeErrorLog("After sorting no errors were found. This means two or more lines in the table have been switched.");
                         volgnummerError = true;
 
                     }
@@ -641,8 +641,6 @@ public class ConcordanceValidator {
 
         // line 1 contains column names so start with line 2:
         int lineNr = 2;
-        double progress = 0;
-        int length = 0;
 
         ArrayList<String> concordanceFileList = new ArrayList<String>();
         ArrayList<String> objectList = new ArrayList<String>();
@@ -658,17 +656,6 @@ public class ConcordanceValidator {
         writeLog("Checking if file in concordance table exists in directory..");
         while ((line = input.readLine()) != null) {
 
-            if (lineNr % 50 == 0) {
-                progress = (Double.valueOf(lineNr) / countedLines) * 100.0;
-                progress = Math.round(progress / 10) * 10;
-                while (length-- > 0) {
-                    System.out.print('\b');
-                }
-                System.out.print(progress + "%");
-                length = String.valueOf(progress).length() + 1;
-
-            }
-
             String[] columns = line.split(CSV_SEPARATOR);
             String fileWithSubdir = columns[columnNumber];
 
@@ -682,8 +669,7 @@ public class ConcordanceValidator {
                     subDir += fileWithSubdirArray[i] + File.separator;
                 }
             }
-
-            concordanceFileList.add(baseDir + File.separator + fileWithSubdir);
+            concordanceFileList.add(fileWithSubdirArray[fileWithSubdirArray.length -1 ]);
             String objectNr = columns[objectColumnNr];
             objectList.add(objectNr);
 
@@ -700,11 +686,21 @@ public class ConcordanceValidator {
                 testHeaderAndFilesize(file, columnNumber);
 
             }
+
+            String correspondingSubdir = baseDir + File.separator + subDir + File.separator + objectNr;
+            file = new File(correspondingSubdir);
+
+            if (!file.exists()){
+
+                writeErrorLog("Error: found objectnummer " + objectNr + " in concordance table without corresponding subdirectory "
+                                + correspondingSubdir + " . Line number: " + lineNr);
+                fileOrHeaderError = true;
+
+            }
+
             lineNr++;
 
         }
-
-        writeLog("");
 
 
         // remove duplicates from object list:
@@ -739,63 +735,25 @@ public class ConcordanceValidator {
         }
 
 
-        int nrOfObjectsChecked = 0;
-        length = 0;
-        // check if all files in the data folders exist in the concordance file:
+        //  check if all files in the data folders exist in the concordance file:
         writeLog("Checking if all files in the data folders exist in the concordance file..");
 
-        for (String objectNr : objectList) {
 
-            progress = (Double.valueOf(nrOfObjectsChecked) / objectList.size()) * 100.0;
-            progress = Math.round(progress / 10) * 10;
-            if (progress % 10 == 0) {
-                while (length-- > 0) {
-                    System.out.print('\b');
-                }
-                System.out.print(progress + "%");
-                length = String.valueOf(progress).length() + 1;
+        File file = new File(baseDir + File.separator + subDir);
+
+        File[] objectSubdirs = file.listFiles();
+
+        Collection<String> listOfAllFiles = new HashSet<String>();
+        for (File objectSubdir : objectSubdirs) {
+            listOfAllFiles.addAll(Arrays.asList(objectSubdir.list()));
+        }
+
+        if(listOfAllFiles.removeAll(concordanceFileList)) {// retainAll returns true if there is a difference
+            errorString += "The following files are found on disk but are not listed in the concordance table: \n";
+            for(String fileAllFile : listOfAllFiles){
+                errorString += fileAllFile + "\n";
             }
-
-            File files = new File(baseDir + File.separator + subDir + File.separator + objectNr);
-
-            String[] filesInDir = files.list();
-            for (String fileFromDir : filesInDir) {
-                fileExists = false;
-                lineNr = 2; // line 1 contains column names
-                for (String fileFromConcordance : concordanceFileList) {
-
-                    String fileFromDirPath = subDir + "/" + fileFromDir;
-                    File tmp = new File(fileFromDirPath);
-                    fileFromDirPath = tmp.getName();
-
-                    File tmp2 = new File(fileFromConcordance);
-                    fileFromConcordance = tmp2.getName();
-
-                    // check for duplicates:
-                    if (fileExists && fileFromDirPath.equals(fileFromConcordance)) {
-                        errorString += ERROR_CONCORDANCE_FILE_DUPLICATE + "\n";
-                        errorString += "Line number: " + lineNr + ", entry: " + fileFromConcordance + "\n";
-                        fileOrHeaderError = true;
-                    }
-
-                    if (fileFromDirPath.equals(fileFromConcordance)) {
-                        fileExists = true;
-                    }
-
-                    lineNr++;
-
-                }
-
-                if (!fileExists) {
-                    errorString += ERROR_CONCORDANCE_FILE_MISSING + "\n";
-                    errorString += "File: " + files + File.separator + fileFromDir + "\n";
-                    fileOrHeaderError = true;
-                }
-
-            }
-
-            nrOfObjectsChecked++;
-
+            fileOrHeaderError = true;
         }
 
         if (!fileOrHeaderError) {
