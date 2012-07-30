@@ -5,6 +5,10 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import java.io.*;
 import java.util.*;
 
+/**
+* Author: Christian Roosendaal
+ */
+
 public class ConcordanceValidator {
 
     // mandatory columns:
