@@ -164,7 +164,7 @@ public class ConcordanceValidator {
                 outputLine = inputLine + CSV_SEPARATOR + "PID";
             }
 
-            output.write(outputLine + "\r\n");
+            output.write(outputLine + "\n");
 
             while ((inputLine = input.readLine()) != null) {
 
@@ -175,7 +175,7 @@ public class ConcordanceValidator {
                     outputLine = inputLine + CSV_SEPARATOR + pid;
                 }
 
-                output.write(outputLine + "\r\n");
+                output.write(outputLine + "\n");
             }
 
             output.flush();
@@ -591,7 +591,7 @@ public class ConcordanceValidator {
 
     private void writeErrorLog(String logString) {
 
-        System.err.println(logString);
+        System.out.println("Error: " + logString);
 
     }
 
