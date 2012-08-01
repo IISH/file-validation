@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 /**
-* Author: Christian Roosendaal
+ * Author: Christian Roosendaal
  */
 
 public class ConcordanceValidator {
@@ -130,7 +130,7 @@ public class ConcordanceValidator {
 
             if (!pidColumnPresent) createPidColumn();
 
-            writeLog("----  All tests passed.  ----");
+            writeLog("----  Done  ----");
             writeLog("");
 
         } catch (IOException e) {
@@ -653,7 +653,7 @@ public class ConcordanceValidator {
         writeLog("Number of lines in concordance file: " + countedLines);
 
         // check if file in concordance table exists in directory:
-        writeLog("Checking if file in concordance table exists in directory..");
+        writeLog("Checking if files in concordance table exists in directory..");
         while ((line = input.readLine()) != null) {
 
             String[] columns = line.split(CSV_SEPARATOR);
@@ -669,7 +669,7 @@ public class ConcordanceValidator {
                     subDir += fileWithSubdirArray[i] + File.separator;
                 }
             }
-            concordanceFileList.add(fileWithSubdirArray[fileWithSubdirArray.length -1 ]);
+            concordanceFileList.add(fileWithSubdirArray[fileWithSubdirArray.length - 1]);
             String objectNr = columns[objectColumnNr];
             objectList.add(objectNr);
 
@@ -690,10 +690,10 @@ public class ConcordanceValidator {
             String correspondingSubdir = baseDir + File.separator + subDir + File.separator + objectNr;
             file = new File(correspondingSubdir);
 
-            if (!file.exists()){
+            if (!file.exists()) {
 
                 writeErrorLog("Error: found objectnummer " + objectNr + " in concordance table without corresponding subdirectory "
-                                + correspondingSubdir + " . Line number: " + lineNr);
+                        + correspondingSubdir + " . Line number: " + lineNr);
                 fileOrHeaderError = true;
 
             }
@@ -748,12 +748,14 @@ public class ConcordanceValidator {
             listOfAllFiles.addAll(Arrays.asList(objectSubdir.list()));
         }
 
-        if(listOfAllFiles.removeAll(concordanceFileList)) {// retainAll returns true if there is a difference
-            errorString += "The following files are found on disk but are not listed in the concordance table: \n";
-            for(String fileAllFile : listOfAllFiles){
-                errorString += fileAllFile + "\n";
+        if (listOfAllFiles.removeAll(concordanceFileList)) {// removeAll returns true if there is a difference
+            if (!listOfAllFiles.isEmpty()) {
+                errorString += "The following files are found on disk but are not listed in the concordance table: \n";
+                for (String fileAllFile : listOfAllFiles) {
+                    errorString += fileAllFile + "\n";
+                }
+                fileOrHeaderError = true;
             }
-            fileOrHeaderError = true;
         }
 
         if (!fileOrHeaderError) {
