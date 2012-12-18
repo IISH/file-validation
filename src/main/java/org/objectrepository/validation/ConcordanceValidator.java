@@ -131,7 +131,7 @@ public class ConcordanceValidator {
 
             if (!pidColumnPresent) createPidColumn();
 
-            writeLog("----  All tests passed.  ----");
+            writeLog("----  Done  ----");
             writeLog("");
 
         } catch (IOException e) {
@@ -231,10 +231,8 @@ public class ConcordanceValidator {
                 } else if (columnNames[i].equals(OCR_COLUMN_NAME)) {
                     ocrColumnNr = i;
                     ocrPresent = true;
-                } else if (columnNames[i].equals(INVNR_COLUMN_NAME)) {
-                    invnrColumnNr = i;
-                    invnrPresent = true;
                 }
+
             }
 
             if (!objectColumnPresent || !masterColumnPresent || !volgNrColumnPresent) {
@@ -409,7 +407,6 @@ public class ConcordanceValidator {
                 String[] columns = line.split(CSV_SEPARATOR);
                 String volgNr = columns[volgNrColumnNr];
                 String objNr = columns[objectColumnNr];
-                String invnrNr = columns[invnrColumnNr];
                 int volgNrParsed = 0;
                 int objNrParsed = 0;
 
