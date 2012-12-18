@@ -1,18 +1,17 @@
 package org.objectrepository.validation;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
-
 import java.io.*;
 import java.util.*;
 
 /**
-* Author: Christian Roosendaal
+ * Author: Christian Roosendaal
  */
 
 public class ConcordanceValidator {
 
     // mandatory columns:
     private static final String OBJECT_COLUMN_NAME = "objnr";
+    private static final String INVNR_COLUMN_NAME = "invnr";
     private static final String VOLGNR_COLUMN_NAME = "volgnr";
     private static final String TIF_COLUMN_NAME = "master";
 
@@ -74,6 +73,8 @@ public class ConcordanceValidator {
     private String baseDir;
 
     File concordanceFile;
+    private int invnrColumnNr;
+    private boolean invnrPresent;
 
     public ConcordanceValidator() {
 
@@ -209,7 +210,6 @@ public class ConcordanceValidator {
             }
 
             for (int i = 0; i < columnNames.length; i++) {
-
                 if (columnNames[i].equals(OBJECT_COLUMN_NAME)) {
                     objectColumnNr = i;
                     objectColumnPresent = true;
@@ -231,8 +231,10 @@ public class ConcordanceValidator {
                 } else if (columnNames[i].equals(OCR_COLUMN_NAME)) {
                     ocrColumnNr = i;
                     ocrPresent = true;
+                } else if (columnNames[i].equals(INVNR_COLUMN_NAME)) {
+                    invnrColumnNr = i;
+                    invnrPresent = true;
                 }
-
             }
 
             if (!objectColumnPresent || !masterColumnPresent || !volgNrColumnPresent) {
@@ -388,11 +390,11 @@ public class ConcordanceValidator {
     // checks if the volgnummers and objectnummers are in correct order.
     // i.e.: (objectnummer:volgnummer) 1:1, 1:2, 1:3, 2:1, 2:2, 2:3, 3:1, ...,
     public void testVolgnummers() {
-        BufferedReader input = null;
+
+        BufferedReader input;
         String line;
         int lineNr = 2;
-        int expectedVolgNr = 1;
-        int expectedObjNr = 1;
+        int expectedVolgNr = -1;
         ArrayList<ObjectNumber> numberList = new ArrayList<ObjectNumber>();
 
 
@@ -407,6 +409,7 @@ public class ConcordanceValidator {
                 String[] columns = line.split(CSV_SEPARATOR);
                 String volgNr = columns[volgNrColumnNr];
                 String objNr = columns[objectColumnNr];
+                String invnrNr = columns[invnrColumnNr];
                 int volgNrParsed = 0;
                 int objNrParsed = 0;
 
@@ -425,50 +428,40 @@ public class ConcordanceValidator {
                     volgnummerError = true;
                 }
 
-                ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, volgNrParsed, lineNr);
+                ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, invnrNr, volgNrParsed, lineNr);
                 numberList.add(combinedNumber);
-
             }
 
+
+            // Verify bundle of inventory codes
+            ArrayList<String> invnrNrList = new ArrayList<String>();
+            String currentInvnrNr = null;
+            for (ObjectNumber combinedNumber : numberList) {
+                if (!combinedNumber.getInvnrNr().equalsIgnoreCase(currentInvnrNr)) { // Change...
+                    if (invnrNrList.contains(combinedNumber.getInvnrNr())) {
+                        writeErrorLog("Error: inventory code at line " + lineNr + " cannot be " + combinedNumber.getInvnrNr());
+                        volgnummerError = true;
+                    } else {
+                        currentInvnrNr = combinedNumber.getInvnrNr();
+                        invnrNrList.add(currentInvnrNr);
+                    }
+                }
+            }
+
+            // For each inventory there ought to be a volgnummer set
+            currentInvnrNr = null;
             for (ObjectNumber combinedNumber : numberList) {
 
-                if (combinedNumber.getObjectNumber() != expectedObjNr) {
-                    expectedObjNr++;
-                    if (combinedNumber.getObjectNumber() == expectedObjNr) {
-                        expectedVolgNr = 1;
-                    } else {
-
-                        if (!sortedVolgnummerCorrect(numberList)) {
-
-                            writeErrorLog("Error: objectnummer incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
-                            volgnummerError = true;
-
-                        } else {
-
-                            writeErrorLog("Warning: objectnummer incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
-                            writeErrorLog("After sorting no errors were found. This probably means two or more lines in the table have been switched");
-                            volgnummerError = true;
-
-                        }
-                    }
-                }
+                if (invnrNrList.contains(combinedNumber.getInvnrNr())) {
+                    expectedVolgNr = 1;
+                    invnrNrList.remove(combinedNumber.getInvnrNr());
+                } else
+                    expectedVolgNr++;
 
                 if (combinedNumber.getVolgNumber() != expectedVolgNr) {
-
-                    if (!sortedVolgnummerCorrect(numberList)) {
-
-                        writeErrorLog("Error: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
-                        volgnummerError = true;
-
-                    } else {
-
-                        writeErrorLog("Warning: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
-                        writeErrorLog("After sorting no errors were found. This means two or more lines in the table have been switched.");
-                        volgnummerError = true;
-
-                    }
+                    writeErrorLog("Error: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
+                    volgnummerError = true;
                 }
-                expectedVolgNr++;
                 lineNr++;
             }
 
@@ -481,48 +474,6 @@ public class ConcordanceValidator {
         if (!volgnummerError) {
             writeLog("Volgnummer test passed.");
         }
-    }
-
-
-    private boolean sortedVolgnummerCorrect(ArrayList<ObjectNumber> numberList) {
-        int expectedObjNr = 1;
-        int expectedVolgNr = 1;
-
-        Collections.sort(numberList, new
-                Comparator<ObjectNumber>() {
-                    public int compare(ObjectNumber lhs, ObjectNumber rhs) {
-
-                        if (lhs.getObjectNumber() > rhs.getObjectNumber()) return 1;
-                        else if (lhs.getObjectNumber() < rhs.getObjectNumber()) return -1;
-
-                        if (lhs.getVolgNumber() > rhs.getVolgNumber()) return 1;
-                        else if (lhs.getVolgNumber() < rhs.getVolgNumber()) return -1;
-
-                        return 0;
-
-                    }
-
-                });
-
-        for (ObjectNumber combinedNumber : numberList) {
-            if (combinedNumber.getObjectNumber() != expectedObjNr) {
-                expectedObjNr++;
-                if (combinedNumber.getObjectNumber() == expectedObjNr) {
-                    expectedVolgNr = 1;
-                } else {
-                    return false;
-                }
-            }
-
-            if (combinedNumber.getVolgNumber() != expectedVolgNr) {
-
-                return false;
-
-            }
-            expectedVolgNr++;
-        }
-
-        return true;
     }
 
 
@@ -669,9 +620,9 @@ public class ConcordanceValidator {
                     subDir += fileWithSubdirArray[i] + File.separator;
                 }
             }
-            concordanceFileList.add(fileWithSubdirArray[fileWithSubdirArray.length -1 ]);
-            String objectNr = columns[objectColumnNr];
-            objectList.add(objectNr);
+            concordanceFileList.add(fileWithSubdirArray[fileWithSubdirArray.length - 1]);
+            String invnrColumnNr = columns[this.invnrColumnNr];
+            objectList.add(invnrColumnNr);
 
             File file = new File(baseDir + File.separator + fileWithSubdir);
             if (!file.exists()) {
@@ -687,13 +638,13 @@ public class ConcordanceValidator {
 
             }
 
-            String correspondingSubdir = baseDir + File.separator + subDir + File.separator + objectNr;
+            String correspondingSubdir = baseDir + File.separator + subDir + File.separator + invnrColumnNr;
             file = new File(correspondingSubdir);
 
-            if (!file.exists()){
+            if (!file.exists()) {
 
-                writeErrorLog("Error: found objectnummer " + objectNr + " in concordance table without corresponding subdirectory "
-                                + correspondingSubdir + " . Line number: " + lineNr);
+                writeErrorLog("Error: found objectnummer " + invnrColumnNr + " in concordance table without corresponding subdirectory "
+                        + correspondingSubdir + " . Line number: " + lineNr);
                 fileOrHeaderError = true;
 
             }
@@ -748,9 +699,9 @@ public class ConcordanceValidator {
             listOfAllFiles.addAll(Arrays.asList(objectSubdir.list()));
         }
 
-        if(listOfAllFiles.removeAll(concordanceFileList)) {// retainAll returns true if there is a difference
+        if (listOfAllFiles.removeAll(concordanceFileList)) {// retainAll returns true if there is a difference
             errorString += "The following files are found on disk but are not listed in the concordance table: \n";
-            for(String fileAllFile : listOfAllFiles){
+            for (String fileAllFile : listOfAllFiles) {
                 errorString += fileAllFile + "\n";
             }
             fileOrHeaderError = true;

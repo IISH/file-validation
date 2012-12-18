@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.*;
 import java.net.URL;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
@@ -368,8 +369,22 @@ public class ConcordanceValidatorTest {
 
 
         assertTrue(ConcordanceValidator.fileOrHeaderError);
+    }
 
+    @Test
+    public void testInvOrder() {
 
+        // incorrect prefix:
+        dataDirLoc = testdataLocation + "dorarussel_test20" + File.separator;
+        prefix = "MMIISG01";
+
+        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
+        concordanceValidator.isUnitTesting = true;
+        concordanceValidator.parseColumns();
+        concordanceValidator.volgnummerError = false;
+        concordanceValidator.testVolgnummers();
+
+        assertFalse(ConcordanceValidator.volgnummerError);
     }
 
 }
