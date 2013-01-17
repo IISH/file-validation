@@ -22,8 +22,8 @@ public class ConcordanceValidator {
 
     private static final String CSV_SEPARATOR = ",";
 
-    private static final String ERROR_FILE_EXISTENCE = "Error: file entry in concordance table does not exist in directory";
-    private static final String ERROR_CONCORDANCE_FILE_MISSING = "Error: file in directory is not listed in the concordance table";
+    private static final String ERROR_FILE_EXISTENCE = " file entry in concordance table does not exist in directory";
+    private static final String ERROR_CONCORDANCE_FILE_MISSING = " file in directory is not listed in the concordance table";
     private static final String ERROR_CONCORDANCE_FILE_DUPLICATE = "Duplicate entry in concordance table.";
 
     private static final String REPORT_FILE = "report.txt";
@@ -200,7 +200,7 @@ public class ConcordanceValidator {
             String[] columnNames = line.split(CSV_SEPARATOR);
 
             if (columnNames.length < 3) {
-                writeErrorLog("Error: incorrect CSV separator. Expected \";\".");
+                writeErrorLog(" incorrect CSV separator. Expected \";\".", 1, line);
                 exit();
             }
 
@@ -242,7 +242,7 @@ public class ConcordanceValidator {
 
         } catch (IOException e) {
 
-            writeErrorLog("Error: Concordance table file not found or cannot read file: " + concordanceFile);
+            writeErrorLog(" Concordance table file not found or cannot read file: " + concordanceFile);
             exit();
 
         }
@@ -309,7 +309,7 @@ public class ConcordanceValidator {
                 String[] tifImageArray = tifImage.split("/");
 
                 if (tifImageArray.length < 2) {
-                    writeErrorLog("Incorrect path name for master image at line " + lineNr + ", column " + masterColumnNr);
+                    writeErrorLog("Incorrect path name for master image at column " + masterColumnNr, lineNr, line);
                     relationshipError = true;
                 }
 
@@ -318,7 +318,7 @@ public class ConcordanceValidator {
                 String[] jpegImageArray = jpegImage.split("/");
 
                 if (jpegImageArray.length < 2) {
-                    writeErrorLog("Incorrect path name for jpeg image at line " + lineNr + ", column " + jpegColumnNr);
+                    writeErrorLog("Incorrect path name for jpeg image at column " + jpegColumnNr, lineNr, line);
                     relationshipError = true;
                 }
 
@@ -326,7 +326,7 @@ public class ConcordanceValidator {
 
 
                 if (!tifImage.equals(jpegImage)) {
-                    writeErrorLog("Warning: Difference in filenames between " + tifImage + " and " + jpegImage + " at line " + lineNr);
+                    writeErrorLog("Warning: Difference in filenames between " + tifImage + " and " + jpegImage, lineNr, line);
                     relationshipError = true;
                 }
 
@@ -336,14 +336,14 @@ public class ConcordanceValidator {
                     String[] jpeg2ImageArray = jpeg2Image.split("/");
 
                     if (jpegImageArray.length < 2) {
-                        writeErrorLog("Incorrect path name for jpeg image at line " + lineNr + ", column " + jpeg2ColumnNr);
+                        writeErrorLog("Incorrect path name for jpeg image at column " + jpeg2ColumnNr, lineNr, line);
                         relationshipError = true;
                     }
 
                     jpeg2Image = jpeg2ImageArray[jpeg2ImageArray.length - 1];
 
                     if (!jpeg2Image.equalsIgnoreCase(jpegImage)) {
-                        writeErrorLog("Warning: Difference in filenames between " + jpeg2Image + " and " + jpegImage + " at line " + lineNr);
+                        writeErrorLog("Warning: Difference in filenames between " + jpeg2Image + " and " + jpegImage, lineNr, line);
                         relationshipError = true;
                     }
                 }
@@ -354,14 +354,14 @@ public class ConcordanceValidator {
                     String[] ocrArray = ocr.split("/");
 
                     if (ocrArray.length < 2) {
-                        writeErrorLog("Incorrect path name at line " + lineNr + ", column " + ocrColumnNr);
+                        writeErrorLog("Incorrect path name at column " + ocrColumnNr, lineNr, line);
                         relationshipError = true;
                     }
 
                     ocr = ocrArray[ocrArray.length - 1];
 
                     if (!ocr.equalsIgnoreCase(jpegImage)) {
-                        writeErrorLog("Warning: Difference in filenames between " + ocr + " and " + jpegImage + " at line " + lineNr);
+                        writeErrorLog("Warning: Difference in filenames between " + ocr + " and " + jpegImage, lineNr, line);
                         relationshipError = true;
                     }
                 }
@@ -410,14 +410,14 @@ public class ConcordanceValidator {
                 try {
                     volgNrParsed = Integer.parseInt(volgNr);
                 } catch (NumberFormatException e) {
-                    writeErrorLog("Error: incorrect entry '" + volgNr + "' in volgnummer column at line " + lineNr);
+                    writeErrorLog(" incorrect entry '" + volgNr + "' in volgnummer column", lineNr, line);
                     volgnummerError = true;
                 }
                 // try parsing the objectnummer, throw error if not a number:
                 try {
                     objNrParsed = Integer.parseInt(objNr);
                 } catch (NumberFormatException e) {
-                    writeErrorLog("Error: incorrect entry '" + objNr + "' in object nummer column at line " + lineNr);
+                    writeErrorLog(" incorrect entry '" + objNr + "' in object nummer column", lineNr, line);
                     volgnummerError = true;
                 }
 
@@ -431,10 +431,10 @@ public class ConcordanceValidator {
                     expectedObjNr++;
                     if (combinedNumber.getObjectNumber() != expectedObjNr) {
                         if (!sortedVolgnummerCorrect(numberList)) {
-                            writeErrorLog("Error: objectnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedObjNr);
+                            writeErrorLog(" objectnummer '" + expectedObjNr + "' incorrect.", combinedNumber.getLineNumber(), line);
                             volgnummerError = true;
                         } else {
-                            writeErrorLog("Warning: objectnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedObjNr);
+                            writeErrorLog("Warning: objectnummer '" + expectedObjNr + "' incorrect", combinedNumber.getLineNumber(), line);
                             writeErrorLog("After sorting no errors were found. This probably means two or more lines in the table have been switched");
                             volgnummerError = true;
                         }
@@ -447,12 +447,12 @@ public class ConcordanceValidator {
 
                     if (!sortedVolgnummerCorrect(numberList)) {
 
-                        writeErrorLog("Error: volgnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedVolgNr);
+                        writeErrorLog(" volgnummer '" + combinedNumber.getVolgNumber() + "' incorrect. Expected: " + expectedVolgNr, combinedNumber.getLineNumber(), line);
                         volgnummerError = true;
 
                     } else {
 
-                        writeErrorLog("Warning: volgnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedVolgNr);
+                        writeErrorLog("Warning: volgnummer '" + combinedNumber.getVolgNumber() + "' incorrect. Expected: " + expectedVolgNr, combinedNumber.getLineNumber(), line);
                         writeErrorLog("After sorting no errors were found. This means two or more lines in the table have been switched.");
                         volgnummerError = true;
 
@@ -537,7 +537,7 @@ public class ConcordanceValidator {
         } else if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg")) {
             magicNumber = MAGIC_NUMBER_JPEG;
         } else {
-            writeLog("Error: cannot check header of file " + inputFile + ". File does not have a recognizable extension: " + extension);
+            writeLog(" cannot check header of file " + inputFile + ". File does not have a recognizable extension: " + extension);
             headerOrFilesizeError = true;
         }
 
@@ -549,7 +549,7 @@ public class ConcordanceValidator {
             FileInputStream fis = new FileInputStream(inputFile);
             if (inputFile.length() < MINIMAL_FILE_SIZE) {
 
-                writeErrorLog("Error: file " + inputFile + " has size smaller than limit of " + MINIMAL_FILE_SIZE + " bytes");
+                writeErrorLog(" file " + inputFile + " has size smaller than limit of " + MINIMAL_FILE_SIZE + " bytes");
                 headerOrFilesizeError = true;
             }
 
@@ -563,7 +563,7 @@ public class ConcordanceValidator {
                 // if TIF file and magic number incorrect, check Big Endian magic number too:
                 if (extension.equalsIgnoreCase("tif") || extension.equalsIgnoreCase("tiff") &&
                         !Arrays.equals(b, MAGIC_NUMBER_TIFF_BIG_ENDIAN)) {
-                    writeErrorLog("Error: The file " + inputFile + " has extension " + extension + " but does not have the correct header.");
+                    writeErrorLog(" The file " + inputFile + " has extension " + extension + " but does not have the correct header.");
                     headerOrFilesizeError = true;
                 }
             }
@@ -578,16 +578,21 @@ public class ConcordanceValidator {
     }
 
 
+    private void writeErrorLog(String logString, int lineNr, String line) {
+
+        System.out.println("Error: " + logString);
+        System.out.println("line " + lineNr + ": " + line);
+        System.out.println("");
+    }
+
     private void writeErrorLog(String logString) {
 
         System.out.println("Error: " + logString);
-
+        System.out.println("");
     }
 
     private void writeLog(String logString) {
-
         System.out.println(logString);
-
     }
 
     void exit() {
@@ -677,8 +682,8 @@ public class ConcordanceValidator {
 
             if (!file.exists()) {
 
-                writeErrorLog("Error: found objectnummer " + objectNr + " in concordance table without corresponding subdirectory "
-                        + correspondingSubdir + " . Line number: " + lineNr);
+                writeErrorLog(" found objectnummer " + objectNr + " in concordance table without corresponding subdirectory "
+                        + correspondingSubdir, lineNr, line);
                 fileOrHeaderError = true;
 
             }
