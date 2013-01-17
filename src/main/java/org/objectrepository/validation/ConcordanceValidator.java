@@ -410,7 +410,7 @@ public class ConcordanceValidator {
                 try {
                     volgNrParsed = Integer.parseInt(volgNr);
                 } catch (NumberFormatException e) {
-                    writeErrorLog("Error: incorrect entry in volgnummer column at line " + lineNr);
+                    writeErrorLog("Error: incorrect entry " + volgNr + " in volgnummer column at line " + lineNr);
                     volgnummerError = true;
                 }
                 // try parsing the objectnummer, throw error if not a number:
