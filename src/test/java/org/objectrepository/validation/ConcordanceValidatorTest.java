@@ -6,7 +6,6 @@ import org.junit.Test;
 import java.io.*;
 import java.net.URL;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
@@ -371,7 +370,7 @@ public class ConcordanceValidatorTest {
         assertTrue(ConcordanceValidator.fileOrHeaderError);
     }
 
-    @Test
+    /*@Test
     public void testInvOrder() {
 
         // incorrect prefix:
@@ -385,6 +384,6 @@ public class ConcordanceValidatorTest {
         concordanceValidator.testVolgnummers();
 
         assertFalse(ConcordanceValidator.volgnummerError);
-    }
+    }*/
 
 }

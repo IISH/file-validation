@@ -12,7 +12,6 @@ public class ObjectNumber {
     private int objectNumber;
     private int volgNumber;
     private int lineNumber;
-    private String invnrNr;
     //
 
 
@@ -24,10 +23,9 @@ public class ObjectNumber {
 
     }
 
-    public ObjectNumber(int objectNumber, String invnrNr, int volgNumber, int lineNumber){
+    public ObjectNumber(int objectNumber, int volgNumber, int lineNumber){
 
         this.objectNumber = objectNumber;
-        this.invnrNr = invnrNr;
         this.volgNumber = volgNumber;
         this.lineNumber = lineNumber;
 
@@ -72,11 +70,4 @@ public class ObjectNumber {
 
     }
 
-    public String getInvnrNr() {
-        return invnrNr;
-    }
-
-    public void setInvnrNr(String invnrNr) {
-        this.invnrNr = invnrNr;
-    }
 }
