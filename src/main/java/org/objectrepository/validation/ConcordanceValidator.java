@@ -403,27 +403,27 @@ public class ConcordanceValidator {
                 String[] columns = line.split(CSV_SEPARATOR);
                 String volgNr = columns[volgNrColumnNr];
                 String objNr = columns[objectColumnNr];
-                int volgNrParsed = 0;
-                int objNrParsed = 0;
+                int volgNrParsed = -1;
+                int objNrParsed = -1;
 
                 // try parsing the volgnummer, throw error if not a number:
                 try {
                     volgNrParsed = Integer.parseInt(volgNr);
                 } catch (NumberFormatException e) {
-                    writeErrorLog("Error: incorrect entry " + volgNr + " in volgnummer column at line " + lineNr);
+                    writeErrorLog("Error: incorrect entry '" + volgNr + "' in volgnummer column at line " + lineNr);
                     volgnummerError = true;
                 }
                 // try parsing the objectnummer, throw error if not a number:
                 try {
                     objNrParsed = Integer.parseInt(objNr);
                 } catch (NumberFormatException e) {
-                    writeErrorLog("Error: incorrect entry in object nummer column at line " + lineNr);
+                    writeErrorLog("Error: incorrect entry '" + objNr + "' in object nummer column at line " + lineNr);
                     volgnummerError = true;
                 }
 
                 ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, volgNrParsed, lineNr);
                 numberList.add(combinedNumber);
-
+                lineNr++;
             }
 
             for (ObjectNumber combinedNumber : numberList) {
@@ -431,35 +431,34 @@ public class ConcordanceValidator {
                     expectedObjNr++;
                     if (combinedNumber.getObjectNumber() != expectedObjNr) {
                         if (!sortedVolgnummerCorrect(numberList)) {
-                            writeErrorLog("Error: objectnummer incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
+                            writeErrorLog("Error: objectnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedObjNr);
                             volgnummerError = true;
                         } else {
-                            writeErrorLog("Warning: objectnummer incorrect at line " + lineNr + ". Expected: " + expectedObjNr);
+                            writeErrorLog("Warning: objectnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedObjNr);
                             writeErrorLog("After sorting no errors were found. This probably means two or more lines in the table have been switched");
                             volgnummerError = true;
                         }
                         expectedObjNr = combinedNumber.getObjectNumber();
-                        expectedVolgNr = 1;
                     }
+                    expectedVolgNr = 1;
                 }
 
                 if (combinedNumber.getVolgNumber() != expectedVolgNr) {
 
                     if (!sortedVolgnummerCorrect(numberList)) {
 
-                        writeErrorLog("Error: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
+                        writeErrorLog("Error: volgnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedVolgNr);
                         volgnummerError = true;
 
                     } else {
 
-                        writeErrorLog("Warning: volgnummer incorrect at line " + lineNr + ". Expected: " + expectedVolgNr);
+                        writeErrorLog("Warning: volgnummer incorrect at line " + combinedNumber.getLineNumber() + ". Expected: " + expectedVolgNr);
                         writeErrorLog("After sorting no errors were found. This means two or more lines in the table have been switched.");
                         volgnummerError = true;
 
                     }
                 }
                 expectedVolgNr++;
-                lineNr++;
             }
 
         } catch (FileNotFoundException e) {
