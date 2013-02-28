@@ -11,6 +11,7 @@ public class ConcordanceValidator {
 
     // mandatory columns:
     private static final String OBJECT_COLUMN_NAME = "objnr";
+    private static final String INV_COLUMN_NAME = "ID";
     private static final String VOLGNR_COLUMN_NAME = "volgnr";
     private static final String TIF_COLUMN_NAME = "master";
 
@@ -37,6 +38,7 @@ public class ConcordanceValidator {
 
 
     int objectColumnNr;
+    int invColumnNr;
     int masterColumnNr;
     int volgNrColumnNr;
     int pidColumnNr;
@@ -47,6 +49,7 @@ public class ConcordanceValidator {
 
     boolean objectColumnPresent;
     boolean masterColumnPresent;
+    boolean invColumnPresent;
     boolean volgNrColumnPresent;
     boolean ocrPresent;
     boolean jpegPresent;
@@ -209,6 +212,9 @@ public class ConcordanceValidator {
                 if (columnNames[i].equalsIgnoreCase(OBJECT_COLUMN_NAME)) {
                     objectColumnNr = i;
                     objectColumnPresent = true;
+                } else if (columnNames[i].equalsIgnoreCase(INV_COLUMN_NAME)) {
+                    invColumnNr = i;
+                    invColumnPresent = true;
                 } else if (columnNames[i].equalsIgnoreCase(TIF_COLUMN_NAME)) {
                     masterColumnNr = i;
                     masterColumnPresent = true;
@@ -630,7 +636,6 @@ public class ConcordanceValidator {
         String line;
         String subDir = "";
         String errorString = "";
-        boolean fileExists;
 
         // line 1 contains column names so start with line 2:
         int lineNr = 2;
@@ -677,9 +682,9 @@ public class ConcordanceValidator {
 
             }
 
-            String correspondingSubdir = baseDir + File.separator + subDir + File.separator + objectNr;
+            String invColumn = columns[invColumnNr];
+            String correspondingSubdir = baseDir + File.separator + subDir + File.separator + invColumn;
             file = new File(correspondingSubdir);
-
             if (!file.exists()) {
 
                 writeErrorLog(" found objectnummer " + objectNr + " in concordance table without corresponding subdirectory "
