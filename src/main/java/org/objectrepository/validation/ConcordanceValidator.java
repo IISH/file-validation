@@ -21,6 +21,8 @@ public class ConcordanceValidator {
     private static final String JPEG2_COLUMN_NAME = "jpeg2";
     private static final String OCR_COLUMN_NAME = "OCR";
 
+    private static String pattern = "[a-zA-Z0-9-:" + escapeMetacharacters("._()[]{@$}=\\") + "]{1,240}";
+
     private static final String CSV_SEPARATOR = ",";
 
     private static final String ERROR_FILE_EXISTENCE = " file entry in concordance table does not exist in directory";
@@ -133,7 +135,7 @@ public class ConcordanceValidator {
             writeLog("");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            writeLog(e.getMessage());
         }
 
 
@@ -682,7 +684,7 @@ public class ConcordanceValidator {
 
             }
 
-            String invColumn = columns[invColumnNr];
+            String invColumn = columns[objectColumnNr];
             String correspondingSubdir = baseDir + File.separator + subDir + File.separator + invColumn;
             file = new File(correspondingSubdir);
             if (!file.exists()) {
@@ -757,5 +759,25 @@ public class ConcordanceValidator {
         }
     }
 
+    /**
+     * Escapes the regular expression's special characters.
+     *
+     * @param text
+     * @return
+     */
+    private static String escapeMetacharacters(String text) {
+
+        final Character[] metaCharacters = {'[', ']', '{', '}', '^', '$', '.', '|', '?', '*', '+', '(', ')', '\\'};
+        ArrayList<Character> list = new ArrayList(Arrays.asList(metaCharacters));
+
+        final StringBuilder sb = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            if (list.contains(c))
+                sb.append("\\"+Character.toString(c));
+            else
+                sb.append(c);
+        }
+        return sb.toString();
+    }
 
 }
