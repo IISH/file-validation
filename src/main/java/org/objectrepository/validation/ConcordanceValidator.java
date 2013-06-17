@@ -147,7 +147,7 @@ public class ConcordanceValidator {
     * */
     public void createPidColumn() {
 
-        File tempConcordanceFile = new File(fileSet + "/" + "concordanceValidWithPID.csv");
+        File tempConcordanceFile = new File(fileSet + "/concordanceValidWithPID.csv");
 
         try {
             BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
