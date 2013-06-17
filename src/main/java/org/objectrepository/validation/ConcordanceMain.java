@@ -9,20 +9,24 @@ public class ConcordanceMain {
     private static final String USAGE = "Usage: java -fileSet [root directory containing tif, jpeg etc. directories] -prefix [project prefix] -na [PID prefix]";
 
     private static final String[] EXPECT = {
-            "-fileSet",
-            "-prefix",
-            "-na",
+            "-fileSet"
     };
 
 
-    public ConcordanceMain(String dataDirLoc, String prefix, String pidPrefix) {
+    public ConcordanceMain(File file) {
 
-        ConcordanceValidator concordanceValidator = new ConcordanceValidator(dataDirLoc, prefix, pidPrefix);
-        concordanceValidator.start();
-
+        new ConcordanceValidator(file).start();
     }
 
 
+    /**
+     * main
+     *
+     * Start the validation using the fileSet:
+     * /a/b/c/archivalID
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         if (args.length < 4) {
@@ -47,7 +51,7 @@ public class ConcordanceMain {
             }
         }
 
-        ConcordanceMain concordanceMain = new ConcordanceMain(map.get("-fileSet"), map.get("-prefix"), map.get("-na"));
-
+        final File fileSet = new File(map.get("-fileSet"));
+        new ConcordanceMain(fileSet);
     }
 }

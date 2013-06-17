@@ -71,31 +71,30 @@ public class ConcordanceValidator {
 
     ArrayList<File> subDirList = new ArrayList<File>();
 
-    private String dataDirLoc;
-    private String prefix;
-    private String pidPrefix;
-    private String baseDir;
+    private String fileSet;
+    private String archivalID;
+    private String na;
+    private String baseFolder; // parent folder of the fileSet
 
     File concordanceFile;
 
-    public ConcordanceValidator() {
 
-    }
+    public ConcordanceValidator(File file) {
 
-    public ConcordanceValidator(String dataDirLoc, String prefix, String pidPrefix) {
+        this.fileSet = file.getAbsolutePath();
+        this.archivalID = file.getName();
+        File parentFile = file.getParentFile();
+        this.na = parentFile.getName();
+        this.baseFolder =  parentFile.getAbsolutePath();
         this.pidColumnPresent = false;
-        this.prefix = prefix;
-        this.dataDirLoc = dataDirLoc + File.separator + this.prefix;
         this.exitCalled = false;
-        this.pidPrefix = pidPrefix;
-        this.baseDir = dataDirLoc;
 
-        String concordanceFileLocation = this.dataDirLoc + File.separator + prefix + ".csv";
+        String concordanceFileLocation = this.fileSet + "/" + archivalID + ".csv";
 
         this.concordanceFile = new File(concordanceFileLocation);
 
         // setup the file to log all output:
-        new File(dataDirLoc + File.separator + REPORT_FILE);
+        new File(fileSet + "/" + REPORT_FILE);
     }
 
     public void start() {
@@ -148,7 +147,7 @@ public class ConcordanceValidator {
     * */
     public void createPidColumn() {
 
-        File tempConcordanceFile = new File(dataDirLoc + File.separator + "concordanceValidWithPID.csv");
+        File tempConcordanceFile = new File(fileSet + "/" + "concordanceValidWithPID.csv");
 
         try {
             BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
@@ -169,7 +168,7 @@ public class ConcordanceValidator {
 
             while ((inputLine = input.readLine()) != null) {
 
-                final String pid = pidPrefix + "/" + UUID.randomUUID().toString().toUpperCase();
+                final String pid = na + "/" + UUID.randomUUID().toString().toUpperCase();
                 if (inputLine.charAt(inputLine.length() - 1) == CSV_SEPARATOR.charAt(0)) {
                     outputLine = inputLine + pid;
                 } else {
@@ -261,7 +260,7 @@ public class ConcordanceValidator {
     }
 
 
-    // check if every file in all subdirectories have the right prefix.
+    // check if every file in all subdirectories have the right archivalID.
     public void testSubdirectories() {
 
         for (File dir : subDirList) {
@@ -275,9 +274,9 @@ public class ConcordanceValidator {
                 for (String object : objects) {
 
                     String prefixOfFile = object.split("_")[0];
-                    if (!prefixOfFile.equals(prefix)) {
+                    if (!prefixOfFile.equals(archivalID)) {
 
-                        writeErrorLog("Error : file " + object + " has incorrect prefix. Expected \"" + prefix + "\". Encountered: \"" + prefixOfFile + "\"");
+                        writeErrorLog("Error : file " + object + " has incorrect archivalID. Expected \"" + archivalID + "\". Encountered: \"" + prefixOfFile + "\"");
                         exit();
 
                     }
@@ -289,7 +288,7 @@ public class ConcordanceValidator {
         }
 
 
-        writeLog("Subdirectory prefix test passed. All data files have the right prefix: \"" + prefix + "\"");
+        writeLog("Subdirectory archivalID test passed. All data files have the right archivalID: \"" + archivalID + "\"");
 
 
     }
@@ -663,14 +662,14 @@ public class ConcordanceValidator {
             if (lineNr == 2) {
                 subDir = "";
                 for (int i = 1; i < (fileWithSubdirArray.length - 2); i++) {
-                    subDir += fileWithSubdirArray[i] + File.separator;
+                    subDir += fileWithSubdirArray[i] + "/";
                 }
             }
             concordanceFileList.add(fileWithSubdirArray[fileWithSubdirArray.length - 1]);
             String objectNr = columns[objectColumnNr];
             objectList.add(objectNr);
 
-            File file = new File(baseDir + File.separator + fileWithSubdir);
+            File file = new File(baseFolder + "/" + fileWithSubdir);
             if (!file.exists()) {
 
                 errorString += ERROR_FILE_EXISTENCE + ": " + file + "\n";
@@ -685,7 +684,7 @@ public class ConcordanceValidator {
             }
 
             String invColumn = columns[objectColumnNr];
-            String correspondingSubdir = baseDir + File.separator + subDir + File.separator + invColumn;
+            String correspondingSubdir = baseFolder + "/" + subDir + "/" + invColumn;
             file = new File(correspondingSubdir);
             if (!file.exists()) {
 
@@ -705,7 +704,7 @@ public class ConcordanceValidator {
         objectList.addAll(h);
 
         // save the directory for further tests:
-        File subDirFile = new File(baseDir + File.separator + subDir);
+        File subDirFile = new File(baseFolder + "/" + subDir);
         subDirList.add(subDirFile);
 
         // check if the amount of subdirectories (objectnumbers) is the same as in concordance table:
@@ -724,7 +723,7 @@ public class ConcordanceValidator {
 
         if (subdirsCheck.length != objectList.size()) {
             errorString += "Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")\n";
-            errorString += "baseDir: " + baseDir + ", subDir: " + subDir + "\n";
+            errorString += "baseFolder: " + baseFolder + ", subDir: " + subDir + "\n";
             fileOrHeaderError = true;
         }
 
@@ -733,7 +732,7 @@ public class ConcordanceValidator {
         writeLog("Checking if all files in the data folders exist in the concordance file..");
 
 
-        File file = new File(baseDir + File.separator + subDir);
+        File file = new File(baseFolder + "/" + subDir);
         File[] objectSubdirs = file.listFiles();
 
         Collection<String> listOfAllFiles = new HashSet<String>();
