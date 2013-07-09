@@ -2,6 +2,8 @@ package org.objectrepository.validation;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Author: Christian Roosendaal
@@ -21,7 +23,7 @@ public class ConcordanceValidator {
     private static final String JPEG2_COLUMN_NAME = "jpeg2";
     private static final String OCR_COLUMN_NAME = "OCR";
 
-    private static String pattern = "[a-zA-Z0-9-:" + escapeMetacharacters("._()[]{@$}=\\") + "]{1,240}";
+    private static String pattern = "^[a-zA-Z0-9-:" + escapeMetacharacters("._()[]{@$}=\\") + "]{1,240}$";
 
     private static final String CSV_SEPARATOR = ",";
 
@@ -85,7 +87,7 @@ public class ConcordanceValidator {
         this.archivalID = file.getName();
         File parentFile = file.getParentFile();
         this.na = parentFile.getName();
-        this.baseFolder =  parentFile.getAbsolutePath();
+        this.baseFolder = parentFile.getAbsolutePath();
         this.pidColumnPresent = false;
         this.exitCalled = false;
 
@@ -109,6 +111,10 @@ public class ConcordanceValidator {
             testRelationShips();
 
             testFileExistenceAndTestHeaders(masterColumnNr);
+
+            testDoubles();
+
+            testCharacters();
 
 //            testSubdirectories();
 
@@ -140,6 +146,55 @@ public class ConcordanceValidator {
 
     }
 
+    private void testCharacters() throws IOException {
+        final BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
+        final Pattern p = Pattern.compile(pattern);
+
+        String line;
+        int lineNr = 0;
+        while ((line = input.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
+
+            lineNr++;
+            String[] columnNames = line.split(CSV_SEPARATOR);
+            String filename = new File(columnNames[masterColumnNr]).getName();
+            Matcher m = p.matcher(escapeMetacharacters(filename));
+            if (!m.find(0)) {
+                writeErrorLog("The filename '" + filename + "' contains an invalid character.", lineNr, line);
+            } else {
+                m = p.matcher(escapeMetacharacters(escapeMetacharacters(columnNames[invColumnNr])));
+                if (!m.find(0)) {
+                    writeErrorLog("The inventory number '" + columnNames[invColumnNr] + "' contains an invalid character.", lineNr, line);
+                }
+            }
+        }
+    }
+
+    /**
+     * testDoubles
+     * <p/>
+     * See if a filename is mentioned elsewhere in the list
+     */
+    private void testDoubles() throws IOException {
+
+        final BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
+
+        final List list = new ArrayList<String>();
+        String line;
+        int lineNr = 0;
+        while ((line = input.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
+
+            lineNr++;
+            String[] columnNames = line.split(CSV_SEPARATOR);
+            String masterColumn = columnNames[masterColumnNr];
+            if (list.contains(masterColumn)) {
+                writeErrorLog("Duplicate file entry '" + masterColumn + "'", lineNr, line);
+            } else
+                list.add(masterColumn);
+        }
+    }
+
 
     /*
     * Creates an extra column in the concordance table to contain PID numbers, if it is not already there.
@@ -167,6 +222,7 @@ public class ConcordanceValidator {
             output.write(outputLine + "\n");
 
             while ((inputLine = input.readLine()) != null) {
+                if (inputLine.trim().isEmpty()) continue;
 
                 final String pid = na + "/" + UUID.randomUUID().toString().toUpperCase();
                 if (inputLine.charAt(inputLine.length() - 1) == CSV_SEPARATOR.charAt(0)) {
@@ -307,6 +363,7 @@ public class ConcordanceValidator {
             input.readLine();
 
             while ((line = input.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
 
                 String[] columns = line.split(CSV_SEPARATOR);
 
@@ -406,6 +463,8 @@ public class ConcordanceValidator {
             input.readLine();
 
             while ((line = input.readLine()) != null) {
+
+                if (line.trim().isEmpty()) continue;
 
                 String[] columns = line.split(CSV_SEPARATOR);
                 String volgNr = columns[volgNrColumnNr];
@@ -623,7 +682,9 @@ public class ConcordanceValidator {
         BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
         int nrOfLines = 0;
 
-        while (input.readLine() != null) {
+        String line;
+        while ((line = input.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
             nrOfLines++;
         }
 
@@ -655,6 +716,7 @@ public class ConcordanceValidator {
         writeLog("Checking if file in concordance table exists in directory..");
         while ((line = input.readLine()) != null) {
 
+            if (line.trim().isEmpty()) continue;
             String[] columns = line.split(CSV_SEPARATOR);
             String fileWithSubdir = columns[columnNumber];
             String[] fileWithSubdirArray = fileWithSubdir.split("/");
@@ -772,7 +834,7 @@ public class ConcordanceValidator {
         final StringBuilder sb = new StringBuilder();
         for (char c : text.toCharArray()) {
             if (list.contains(c))
-                sb.append("\\"+Character.toString(c));
+                sb.append("\\" + Character.toString(c));
             else
                 sb.append(c);
         }
