@@ -116,7 +116,7 @@ public class ConcordanceValidator {
 
             testCharacters();
 
-//            testSubdirectories();
+            testSubdirectories();
 
             if (jpegPresent) {
                 testFileExistenceAndTestHeaders(jpegColumnNr);
@@ -480,12 +480,12 @@ public class ConcordanceValidator {
                     volgnummerError = true;
                 }
                 // try parsing the objectnummer, throw error if not a number:
-                try {
+               /* try {
                     objNrParsed = Integer.parseInt(objNr);
                 } catch (NumberFormatException e) {
                     writeErrorLog(" incorrect entry '" + objNr + "' in object nummer column", lineNr, line);
                     volgnummerError = true;
-                }
+                }*/
 
                 ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, volgNrParsed, lineNr);
                 numberList.add(combinedNumber);
@@ -495,17 +495,19 @@ public class ConcordanceValidator {
             for (ObjectNumber combinedNumber : numberList) {
                 if (combinedNumber.getObjectNumber() != expectedObjNr) {
                     expectedObjNr++;
+
                     if (combinedNumber.getObjectNumber() != expectedObjNr) {
                         if (!sortedVolgnummerCorrect(numberList)) {
-                            writeErrorLog(" objectnummer '" + expectedObjNr + "' incorrect.", combinedNumber.getLineNumber(), line);
-                            volgnummerError = true;
+                            //writeErrorLog(" objectnummer '" + expectedObjNr + "' incorrect.", combinedNumber.getLineNumber(), line);
+                            //volgnummerError = true;
                         } else {
-                            writeErrorLog("Warning: objectnummer '" + expectedObjNr + "' incorrect", combinedNumber.getLineNumber(), line);
-                            writeErrorLog("After sorting no errors were found. This probably means two or more lines in the table have been switched");
-                            volgnummerError = true;
+                            //writeErrorLog("Warning: objectnummer '" + expectedObjNr + "' incorrect", combinedNumber.getLineNumber(), line);
+                            //writeErrorLog("After sorting no errors were found. This probably means two or more lines in the table have been switched");
+                            //volgnummerError = true;
                         }
                         expectedObjNr = combinedNumber.getObjectNumber();
                     }
+
                     expectedVolgNr = 1;
                 }
 
@@ -786,6 +788,14 @@ public class ConcordanceValidator {
         if (subdirsCheck.length != objectList.size()) {
             errorString += "Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")\n";
             errorString += "baseFolder: " + baseFolder + ", subDir: " + subDir + "\n";
+
+            for (String d : subdirsCheck) {
+                File folder = new File(d);
+                if (!objectList.contains(folder.getName())) {
+                    errorString += d + "\n";
+                }
+            }
+
             fileOrHeaderError = true;
         }
 
