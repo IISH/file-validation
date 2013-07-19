@@ -124,7 +124,6 @@ public class ConcordanceValidatorTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        concordanceValidator.testSubdirectories();
 
         assertTrue(ConcordanceValidator.exitCalled);
     }
