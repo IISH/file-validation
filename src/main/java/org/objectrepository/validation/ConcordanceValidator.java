@@ -452,7 +452,7 @@ public class ConcordanceValidator {
         String line;
         int lineNr = 2;
         int expectedVolgNr = 1;
-        int expectedObjNr = 1;
+        String expectedObjNr = "1";
         ArrayList<ObjectNumber> numberList = new ArrayList<ObjectNumber>();
 
 
@@ -470,7 +470,6 @@ public class ConcordanceValidator {
                 String volgNr = columns[volgNrColumnNr];
                 String objNr = columns[objectColumnNr];
                 int volgNrParsed = -1;
-                int objNrParsed = -1;
 
                 // try parsing the volgnummer, throw error if not a number:
                 try {
@@ -487,44 +486,21 @@ public class ConcordanceValidator {
                     volgnummerError = true;
                 }*/
 
-                ObjectNumber combinedNumber = new ObjectNumber(objNrParsed, volgNrParsed, lineNr);
+                ObjectNumber combinedNumber = new ObjectNumber(objNr, volgNrParsed, lineNr);
                 numberList.add(combinedNumber);
                 lineNr++;
             }
 
             for (ObjectNumber combinedNumber : numberList) {
-                if (combinedNumber.getObjectNumber() != expectedObjNr) {
-                    expectedObjNr++;
-
-                    if (combinedNumber.getObjectNumber() != expectedObjNr) {
-                        if (!sortedVolgnummerCorrect(numberList)) {
-                            //writeErrorLog(" objectnummer '" + expectedObjNr + "' incorrect.", combinedNumber.getLineNumber(), line);
-                            //volgnummerError = true;
-                        } else {
-                            //writeErrorLog("Warning: objectnummer '" + expectedObjNr + "' incorrect", combinedNumber.getLineNumber(), line);
-                            //writeErrorLog("After sorting no errors were found. This probably means two or more lines in the table have been switched");
-                            //volgnummerError = true;
-                        }
-                        expectedObjNr = combinedNumber.getObjectNumber();
-                    }
-
+                if (!combinedNumber.getObjectNumber().equalsIgnoreCase(expectedObjNr)) {
+                    expectedObjNr = combinedNumber.getObjectNumber();
                     expectedVolgNr = 1;
                 }
 
                 if (combinedNumber.getVolgNumber() != expectedVolgNr) {
-
-                    if (!sortedVolgnummerCorrect(numberList)) {
-
-                        writeErrorLog(" volgnummer '" + combinedNumber.getVolgNumber() + "' incorrect. Expected: " + expectedVolgNr, combinedNumber.getLineNumber(), line);
-                        volgnummerError = true;
-
-                    } else {
-
-                        writeErrorLog("Warning: volgnummer '" + combinedNumber.getVolgNumber() + "' incorrect. Expected: " + expectedVolgNr, combinedNumber.getLineNumber(), line);
-                        writeErrorLog("After sorting no errors were found. This means two or more lines in the table have been switched.");
-                        volgnummerError = true;
-
-                    }
+                    writeErrorLog(" volgnummer '" + combinedNumber.getVolgNumber() + "' incorrect. Expected: " + expectedVolgNr, combinedNumber.getLineNumber(), "");
+                    volgnummerError = true;
+                    expectedVolgNr = combinedNumber.getVolgNumber();
                 }
                 expectedVolgNr++;
             }
@@ -539,49 +515,6 @@ public class ConcordanceValidator {
             writeLog("Volgnummer test passed.");
         }
     }
-
-
-    private boolean sortedVolgnummerCorrect(ArrayList<ObjectNumber> numberList) {
-        int expectedObjNr = 1;
-        int expectedVolgNr = 1;
-
-        Collections.sort(numberList, new
-                Comparator<ObjectNumber>() {
-                    public int compare(ObjectNumber lhs, ObjectNumber rhs) {
-
-                        if (lhs.getObjectNumber() > rhs.getObjectNumber()) return 1;
-                        else if (lhs.getObjectNumber() < rhs.getObjectNumber()) return -1;
-
-                        if (lhs.getVolgNumber() > rhs.getVolgNumber()) return 1;
-                        else if (lhs.getVolgNumber() < rhs.getVolgNumber()) return -1;
-
-                        return 0;
-
-                    }
-
-                });
-
-        for (ObjectNumber combinedNumber : numberList) {
-            if (combinedNumber.getObjectNumber() != expectedObjNr) {
-                expectedObjNr++;
-                if (combinedNumber.getObjectNumber() == expectedObjNr) {
-                    expectedVolgNr = 1;
-                } else {
-                    return false;
-                }
-            }
-
-            if (combinedNumber.getVolgNumber() != expectedVolgNr) {
-
-                return false;
-
-            }
-            expectedVolgNr++;
-        }
-
-        return true;
-    }
-
 
     public static String getExtension(File f) {
         String ext = null;
@@ -790,9 +723,8 @@ public class ConcordanceValidator {
             errorString += "baseFolder: " + baseFolder + ", subDir: " + subDir + "\n";
 
             for (String d : subdirsCheck) {
-                File folder = new File(d);
-                if (!objectList.contains(folder.getName())) {
-                    errorString += d + "\n";
+                if (!objectList.contains(d)) {
+                    errorString += "folder: " + d + "\n";
                 }
             }
 

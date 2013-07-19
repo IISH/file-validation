@@ -9,7 +9,7 @@ package org.objectrepository.validation;
  */
 public class ObjectNumber {
 
-    private int objectNumber;
+    private String objectNumber;
     private int volgNumber;
     private int lineNumber;
     //
@@ -17,13 +17,13 @@ public class ObjectNumber {
 
     public ObjectNumber(){
 
-        this.objectNumber = 0;
+        this.objectNumber = null;
         this.volgNumber = 0;
         this.lineNumber = 0;
 
     }
 
-    public ObjectNumber(int objectNumber, int volgNumber, int lineNumber){
+    public ObjectNumber(String objectNumber, int volgNumber, int lineNumber){
 
         this.objectNumber = objectNumber;
         this.volgNumber = volgNumber;
@@ -31,7 +31,7 @@ public class ObjectNumber {
 
     }
 
-    public void setObjectNumber(int objectNumber){
+    public void setObjectNumber(String objectNumber){
 
         this.objectNumber = objectNumber;
 
@@ -43,7 +43,7 @@ public class ObjectNumber {
 
     }
 
-    public int getObjectNumber(){
+    public String getObjectNumber(){
 
         return this.objectNumber;
 
