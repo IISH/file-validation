@@ -116,21 +116,16 @@ public class ConcordanceValidator {
 
             testCharacters();
 
-            testSubdirectories();
-
             if (jpegPresent) {
                 testFileExistenceAndTestHeaders(jpegColumnNr);
-//                testSubdirectories();
             }
 
             if (jpeg2Present) {
                 testFileExistenceAndTestHeaders(jpeg2ColumnNr);
-//                testSubdirectories();
             }
 
             if (ocrPresent) {
                 testFileExistenceAndTestHeaders(ocrColumnNr);
-//                testSubdirectories();
             }
 
 
@@ -314,41 +309,6 @@ public class ConcordanceValidator {
 
 
     }
-
-
-    // check if every file in all subdirectories have the right archivalID.
-    public void testSubdirectories() {
-
-        for (File dir : subDirList) {
-
-            File[] fileList = dir.listFiles();
-
-            for (File objectDir : fileList) {
-
-                String[] objects = objectDir.list();
-
-                for (String object : objects) {
-
-                    String prefixOfFile = object.split("_")[0];
-                    if (!prefixOfFile.equals(archivalID)) {
-
-                        writeErrorLog("Error : file " + object + " has incorrect archivalID. Expected \"" + archivalID + "\". Encountered: \"" + prefixOfFile + "\"");
-                        exit();
-
-                    }
-                }
-
-
-            }
-
-        }
-
-
-        writeLog("Subdirectory archivalID test passed. All data files have the right archivalID: \"" + archivalID + "\"");
-
-
-    }
-
 
     public void testRelationShips() {
 
