@@ -23,7 +23,7 @@ public class ConcordanceValidator {
     private static final String JPEG2_COLUMN_NAME = "jpeg2";
     private static final String OCR_COLUMN_NAME = "OCR";
 
-    private static String pattern = "^[a-zA-Z0-9-:" + escapeMetacharacters("._()[]{@$}=\\") + "]{1,240}$";
+    private static String pattern = "^[\\sa-zA-Z0-9-:" + escapeMetacharacters("._()[]{@$}=\\") + "]{1,240}$";
 
     private static final String CSV_SEPARATOR = ",";
 
