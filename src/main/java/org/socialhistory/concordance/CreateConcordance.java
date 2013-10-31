@@ -1,4 +1,6 @@
-package org.objectrepository.concordance;
+package org.socialhistory.concordance;
+
+import org.socialhistory.concordance.ConcordanceTable;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

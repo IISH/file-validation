@@ -1,4 +1,4 @@
-package org.objectrepository.concordance;
+package org.socialhistory.concordance;
 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
