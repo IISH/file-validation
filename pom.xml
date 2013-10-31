@@ -40,6 +40,44 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>ideauidesigner-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>javac2</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <fork>true</fork>
+                    <debug>true</debug>
+                    <failOnError>true</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.socialhistory.concordance.CreateConcordanceMain</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
