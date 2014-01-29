@@ -17,7 +17,7 @@ public class ConcordanceTable {
         source.setSystemId(resource.toString());
 
         final Transformer transformer = tf.newTransformer(source);
-        transformer.setParameter("archivalID", sourceFile.getName());
+        transformer.setParameter("archivalID", CreateConcordance.removeExtension(sourceFile.getName()));
 
         if (targetFile.exists())
             targetFile.delete();

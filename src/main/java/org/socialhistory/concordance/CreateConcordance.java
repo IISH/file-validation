@@ -60,7 +60,7 @@ public class CreateConcordance extends JFrame {
         return panel1;
     }
 
-    private static String removeExtension(String name) {
+    public static String removeExtension(String name) {
         int i = name.lastIndexOf(".");
         return (i == -1) ? name : name.substring(0, i);
     }
