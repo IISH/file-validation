@@ -7,11 +7,11 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 /**
- * CreateConcordanceMain
+ * CreateMain
  * <p/>
  * Creates a concordance table from the EAD
  */
-public class CreateConcordanceMain {
+public class CreateMain {
 
     public static void main(String[] args) throws IOException {
 
@@ -23,10 +23,10 @@ public class CreateConcordanceMain {
             }
         });
 
-        frame.setContentPane(new CreateConcordance().getMainPanel());
+        frame.setContentPane(new CreateForm().getMainPanel());
         frame.setTitle("Create concordance tables");
         frame.pack();
-        frame.setSize(new Dimension(800, 100));
+        frame.setSize(new Dimension(800, 150));
         frame.setVisible(true);
     }
 
