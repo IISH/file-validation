@@ -106,25 +106,33 @@ public class ConcordanceValidator {
 
         try {
 
+            writeLog("testVolgnummers");
             testVolgnummers();
 
+            writeLog("testRelationShips");
             testRelationShips();
 
+            writeLog("testFileExistenceAndTestHeaders(masterColumnNr)");
             testFileExistenceAndTestHeaders(masterColumnNr);
 
+            writeLog("testDoubles");
             testDoubles();
 
+            writeLog("testCharacters");
             testCharacters();
 
             if (jpegPresent) {
+                writeLog("testFileExistenceAndTestHeaders(jpegColumnNr)");
                 testFileExistenceAndTestHeaders(jpegColumnNr);
             }
 
             if (jpeg2Present) {
+                writeLog("testFileExistenceAndTestHeaders(jpeg2ColumnNr)");
                 testFileExistenceAndTestHeaders(jpeg2ColumnNr);
             }
 
             if (ocrPresent) {
+                writeLog("testFileExistenceAndTestHeaders(ocrColumnNr)");
                 testFileExistenceAndTestHeaders(ocrColumnNr);
             }
 

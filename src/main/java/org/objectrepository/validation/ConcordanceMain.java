@@ -25,7 +25,7 @@ public class ConcordanceMain {
      * Start the validation using the fileSet:
      * /a/b/c/archivalID
      *
-     * @param args
+     * @param args A list of keys and values in the format [-key value]
      */
     public static void main(String[] args) {
 
