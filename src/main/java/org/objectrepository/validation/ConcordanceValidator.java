@@ -137,7 +137,10 @@ public class ConcordanceValidator {
             }
 
 
-            if (!pidColumnPresent) createPidColumn();
+            if (!pidColumnPresent) {
+                writeLog("createPidColumn");
+                createPidColumn();
+            }
 
             writeLog("----  All tests passed.  ----");
             writeLog("");
@@ -205,7 +208,7 @@ public class ConcordanceValidator {
     * */
     public void createPidColumn() {
 
-        File tempConcordanceFile = new File(fileSet + "/concordanceValidWithPID.csv");
+        final File tempConcordanceFile = new File(fileSet + "/concordanceValidWithPID.csv");
 
         try {
             BufferedReader input = new BufferedReader(new FileReader(concordanceFile));
@@ -245,6 +248,7 @@ public class ConcordanceValidator {
 
 
         } catch (IOException e) {
+            writeErrorLog(e.getMessage());
             e.printStackTrace();
         }
 
