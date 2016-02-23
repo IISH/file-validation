@@ -62,7 +62,6 @@ public class ConcordanceValidator {
 
     // for testing purposes:
     public static boolean exitCalled;
-    public static boolean warning;
     public static boolean relationshipError;
     public static boolean fileOrHeaderError;
     public static boolean volgnummerError;
@@ -89,7 +88,7 @@ public class ConcordanceValidator {
         this.na = parentFile.getName();
         this.baseFolder = parentFile.getAbsolutePath();
         this.pidColumnPresent = false;
-        this.exitCalled = false;
+        exitCalled = false;
 
         String concordanceFileLocation = this.fileSet + "/" + archivalID + ".csv";
 
@@ -324,7 +323,7 @@ public class ConcordanceValidator {
 
     public void testRelationShips() {
 
-        BufferedReader input = null;
+        BufferedReader input;
         int lineNr = 2;
         String line;
 
@@ -420,7 +419,7 @@ public class ConcordanceValidator {
     // checks if the volgnummers and objectnummers are in correct order.
     // i.e.: (objectnummer:volgnummer) 1:1, 1:2, 1:3, 2:1, 2:2, 2:3, 3:1, ...,
     public void testVolgnummers() {
-        BufferedReader input = null;
+        BufferedReader input;
         String line;
         int lineNr = 2;
         int expectedVolgNr = 1;
@@ -501,7 +500,7 @@ public class ConcordanceValidator {
         return ext;
     }
 
-    public void testHeaderAndFilesize(File inputFile, int columnNr) {
+    public void testHeaderAndFilesize(File inputFile) {
         byte[] magicNumber = {};
         String extension = getExtension(inputFile);
 
@@ -648,7 +647,7 @@ public class ConcordanceValidator {
             } else {
 
                 // test header of image files
-                testHeaderAndFilesize(file, columnNumber);
+                testHeaderAndFilesize(file);
 
             }
 
@@ -688,9 +687,7 @@ public class ConcordanceValidator {
             writeErrorLog("\nError during header and filesize test: Trying to list subdirectories of " + subDirFile);
             exit();
 
-        }
-
-        if (subdirsCheck.length != objectList.size()) {
+        } else if (subdirsCheck.length != objectList.size()) {
             errorString += "Amount of directories found in " + subDirFile + "(" + subdirsCheck.length + ") is not the same as the amount of objects found in concordance file (" + objectList.size() + ")\n";
             errorString += "baseFolder: " + baseFolder + ", subDir: " + subDir + "\n";
 
@@ -708,15 +705,20 @@ public class ConcordanceValidator {
         writeLog("Checking if all files in the data folders exist in the concordance file..");
 
 
-        File file = new File(baseFolder + "/" + subDir);
-        File[] objectSubdirs = file.listFiles();
+        final File file = new File(baseFolder + "/" + subDir);
+        final File[] objectSubdirs = file.listFiles();
 
         Collection<String> listOfAllFiles = new HashSet<String>();
         if (objectSubdirs == null) {
             writeErrorLog("The folder has no files:" + file.getAbsolutePath());
         } else {
             for (File objectSubdir : objectSubdirs) {
-                listOfAllFiles.addAll(Arrays.asList(objectSubdir.list()));
+                final String[] list = objectSubdir.list();
+                if ( list == null ) {
+                    writeErrorLog("The folder has no files:" + objectSubdir.getAbsolutePath());
+                } else {
+                    listOfAllFiles.addAll(Arrays.asList(list));
+                }
             }
         }
 
@@ -752,7 +754,7 @@ public class ConcordanceValidator {
         final StringBuilder sb = new StringBuilder();
         for (char c : text.toCharArray()) {
             if (list.contains(c))
-                sb.append("\\" + Character.toString(c));
+                sb.append("\\").append(Character.toString(c));
             else
                 sb.append(c);
         }
