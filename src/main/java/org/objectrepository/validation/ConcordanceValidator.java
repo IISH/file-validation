@@ -632,6 +632,10 @@ public class ConcordanceValidator {
                 for (int i = 1; i < (fileWithSubdirArray.length - 2); i++) {
                     subDir += fileWithSubdirArray[i] + "/";
                 }
+                if ( subDir.isEmpty()) {
+                    writeErrorLog("subDir is empty when parsing it for column '" + fileWithSubdir + "' from line: " + line);
+                    continue;
+                }
             }
             concordanceFileList.add(fileWithSubdirArray[fileWithSubdirArray.length - 1]);
             String objectNr = columns[objectColumnNr];
