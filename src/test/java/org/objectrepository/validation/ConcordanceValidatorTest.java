@@ -44,13 +44,13 @@ public class ConcordanceValidatorTest {
 
         File file = new File(dataDirLoc + File.separator + prefix + File.separator + "concordanceValidWithPID.csv");
         BufferedReader input = null;
-        String inputLine = "";
         try {
             input = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
+        String inputLine;
         try {
             inputLine = input.readLine();
 
@@ -248,7 +248,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator.isUnitTesting = true;
 
         File file = new File(dataDirLoc + "MMIISG01\\JPEG-7" + File.separator + "000001" + File.separator + "MMIISG01_AF_000001.dat");
-        concordanceValidator.testHeaderAndFilesize(file, 1);
+        concordanceValidator.testHeaderAndFilesize(file);
 
 
         assertTrue(ConcordanceValidator.headerOrFilesizeError);
@@ -263,7 +263,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator = new ConcordanceValidator(new File(dataDirLoc + "/" + pidPrefix + "/" + prefix));
         concordanceValidator.isUnitTesting = true;
 
-        concordanceValidator.testHeaderAndFilesize(file, 1);
+        concordanceValidator.testHeaderAndFilesize(file);
 
         assertTrue(ConcordanceValidator.headerOrFilesizeError);
 
@@ -276,7 +276,7 @@ public class ConcordanceValidatorTest {
         concordanceValidator = new ConcordanceValidator(new File(dataDirLoc + "/" + pidPrefix + "/" + prefix));
         concordanceValidator.isUnitTesting = true;
 
-        concordanceValidator.testHeaderAndFilesize(file, 1);
+        concordanceValidator.testHeaderAndFilesize(file);
 
         assertTrue(ConcordanceValidator.headerOrFilesizeError);
 
