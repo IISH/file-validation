@@ -712,8 +712,12 @@ public class ConcordanceValidator {
         File[] objectSubdirs = file.listFiles();
 
         Collection<String> listOfAllFiles = new HashSet<String>();
-        for (File objectSubdir : objectSubdirs) {
-            listOfAllFiles.addAll(Arrays.asList(objectSubdir.list()));
+        if (objectSubdirs == null) {
+            writeErrorLog("The folder has no files:" + file.getAbsolutePath());
+        } else {
+            for (File objectSubdir : objectSubdirs) {
+                listOfAllFiles.addAll(Arrays.asList(objectSubdir.list()));
+            }
         }
 
         if (listOfAllFiles.removeAll(concordanceFileList)) {// retainAll returns true if there is a difference
