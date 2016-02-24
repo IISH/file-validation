@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="panel1" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="5" left="5" bottom="5" right="5"/>
     <constraints>
-      <xy x="20" y="20" width="891" height="111"/>
+      <xy x="20" y="20" width="891" height="108"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -16,20 +16,12 @@
         </constraints>
         <properties/>
       </component>
-      <component id="d3f33" class="javax.swing.JButton" binding="createConcordanceTableButton" default-binding="true">
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Create concordance table"/>
-        </properties>
-      </component>
-      <component id="db025" class="javax.swing.JButton" binding="button1" default-binding="true">
+      <component id="db025" class="javax.swing.JButton" binding="chooseDocument">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Choose EAD document"/>
+          <text value="Choose XML document"/>
         </properties>
       </component>
       <component id="8a9a9" class="javax.swing.JLabel" binding="label1">
@@ -37,23 +29,29 @@
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Waiting for you to create the table"/>
+          <text value="Select the stylesheet"/>
         </properties>
       </component>
-      <component id="d2073" class="javax.swing.JButton" binding="insertDaogrpElementsButton" default-binding="true">
+      <component id="54a48" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="d2073" class="javax.swing.JButton" binding="startTransformation">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Insert daogrp elements"/>
+          <text value="Start transformation"/>
         </properties>
       </component>
-      <component id="7d32f" class="javax.swing.JLabel" binding="label2">
+      <component id="d199a" class="javax.swing.JLabel" binding="label2">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Waiting to begin adding and removing daogrp elements"/>
+          <text value="Waiting"/>
         </properties>
       </component>
     </children>

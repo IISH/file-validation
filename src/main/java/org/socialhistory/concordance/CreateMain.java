@@ -24,7 +24,7 @@ public class CreateMain {
         });
 
         frame.setContentPane(new CreateForm().getMainPanel());
-        frame.setTitle("Create concordance tables");
+        frame.setTitle("Create transformation options");
         frame.pack();
         frame.setSize(new Dimension(800, 150));
         frame.setVisible(true);

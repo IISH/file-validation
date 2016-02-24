@@ -10,22 +10,35 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class CreateForm extends JFrame {
-    private JButton button1;
-    private JButton createConcordanceTableButton;
+    private JButton chooseDocument;
     private JTextField filename;
     private JPanel panel1;
-    private JLabel label1;
-    private JButton insertDaogrpElementsButton;
+    private JButton startTransformation;
     private JLabel label2;
+    private JComboBox comboBox1;
+    private JLabel label1;
     private File selectedFile;
 
     public CreateForm() {
+        initUIComponents();
+    }
 
-        button1.addActionListener(new ActionListener() {
+    public Container getMainPanel() {
+        return panel1;
+    }
+
+    private void initUIComponents() {
+
+        final java.util.List<String> list = XsltConversion.getXsltDocuments();
+        for (String item : list) {
+            comboBox1.addItem(item);
+        }
+
+        chooseDocument.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 final JFileChooser c = new JFileChooser();
-                c.addChoosableFileFilter(new FileNameExtensionFilter("EAD files", "xml"));
+                c.addChoosableFileFilter(new FileNameExtensionFilter("XML files", "xml"));
                 c.setAcceptAllFileFilterUsed(false);
                 int rVal = c.showOpenDialog(CreateForm.this);
                 if (rVal == JFileChooser.APPROVE_OPTION) {
@@ -37,34 +50,14 @@ public class CreateForm extends JFrame {
             }
         });
 
-        createConcordanceTableButton.addActionListener(new ActionListener() {
+        startTransformation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (selectedFile != null && selectedFile.exists()) {
-                    File targetFile = new File(selectedFile.getParent(),
-                            removeExtension(selectedFile.getName()) + ".csv");
+                    final File targetFile = new File(selectedFile.getParent(),
+                            XsltConversion.removeExtension(selectedFile.getName()) + ".result.xml");
                     try {
-                        XsltConversion.write(selectedFile, targetFile, "concordancetable.xsl");
-                    } catch (Exception e) {
-                        label1.setText(e.getMessage());
-                    } finally {
-                        if (targetFile.exists())
-                            label1.setText("See " + targetFile.getAbsolutePath());
-                        else
-                            label1.setText("Failed to create " + targetFile.getAbsolutePath());
-                    }
-                }
-            }
-        });
-        insertDaogrpElementsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (selectedFile != null && selectedFile.exists()) {
-                    File targetFile = new File(selectedFile.getParent(),
-                            removeExtension(selectedFile.getName()) + ".daogrp.xml");
-                    try {
-                        label2.setText("Working...");
-                        XsltConversion.write(selectedFile, targetFile, "daogrp.xsl");
+                        XsltConversion.write(selectedFile, targetFile, String.valueOf(comboBox1.getSelectedItem()));
                     } catch (Exception e) {
                         label2.setText(e.getMessage());
                     } finally {
@@ -77,14 +70,4 @@ public class CreateForm extends JFrame {
             }
         });
     }
-
-    public Container getMainPanel() {
-        return panel1;
-    }
-
-    public static String removeExtension(String name) {
-        int i = name.lastIndexOf(".");
-        return (i == -1) ? name : name.substring(0, i);
-    }
-
 }
