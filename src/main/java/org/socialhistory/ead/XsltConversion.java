@@ -43,6 +43,13 @@ public class XsltConversion {
                 list.add(file.getName());
             }
         }
+
+        if ( list.isEmpty())  {
+            list.add("add_daogrp.xsl");
+            list.add("create_concordancetable.xsl");
+            list.add("remove_daogrp.xsl");
+        }
+
         return list ;
     }
 
