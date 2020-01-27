@@ -13,9 +13,9 @@
     </xsl:template>
 
     <xsl:template match="ead:did/ead:unitid">
-        <xsl:if test="ext:availableOnline(concat('http://disseminate.objectrepository.org/mets/10622/', $archivalID, '.', ext:urlencode(text())))">
+        <xsl:if test="ext:availableOnline(concat('https://access.iisg.amsterdam/iiif/presentation/', $archivalID, '.', ext:urlencode(text()), '/manifest'))">
             <xsl:variable name="handle"
-                          select="concat('http://hdl.handle.net/10622/', $archivalID, '%2E', ext:urlencode(text()))"/>
+                          select="concat('https://hdl.handle.net/10622/', $archivalID, '%2E', ext:urlencode(text()))"/>
             <daogrp xlink:type="extended">
                 <xsl:element name="daoloc">
                     <xsl:attribute name="xlink:href"
